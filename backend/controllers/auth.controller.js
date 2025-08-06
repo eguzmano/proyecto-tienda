@@ -37,17 +37,16 @@ const login = async (req, res) => {
 
     return res.json({ email, token });
   } catch (error) {
-    // console.log(error);
     return res.status(500).json({ error: "Server error" });
   }
 };
 
 const register = async (req, res) => {
   try {
-    const { email = "", password = "" } = req.body;
+    const { name = '', lastname = '', email = '', password = '' } = req.body;
 
-    if (!email.trim() || !password.trim()) {
-      return res.status(400).json({ error: "Email and password are required" });
+    if (!email.trim() || !password.trim() || !name.trim() || !lastname.trim()) {
+      return res.status(400).json({ error: "All data are required" });
     }
 
     if (!isValidEmail(email)) {
@@ -64,7 +63,7 @@ const register = async (req, res) => {
     if (user) {
       return res.status(400).json({ error: "User already exists" });
     }
-    const newUser = { email, password, id: nanoid() };
+    const newUser = { name, lastname, email, password, id: nanoid() };
     await authModel.addUser(newUser);
 
     const payload = { email, id: newUser.id };
@@ -72,7 +71,6 @@ const register = async (req, res) => {
 
     return res.json({ email, token });
   } catch (error) {
-    // console.log(error);
     return res.status(500).json({ error: "Server error" });
   }
 };
@@ -83,7 +81,6 @@ const me = async (req, res) => {
     const user = await authModel.getUserByEmail(email);
     return res.json({ email, id: user.id });
   } catch (error) {
-    // console.log(error);
     return res.status(500).json({ error: "Server error" });
   }
 };
