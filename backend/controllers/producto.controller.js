@@ -14,7 +14,7 @@ const readProducto = async (req, res) => {
   res.json(muebles);
 };
 
-export const pizzaController = {
+export const productoController = {
   readProductos,
-  readProductos,
+  readProducto,
 };
