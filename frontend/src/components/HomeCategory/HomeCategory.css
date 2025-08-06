@@ -1,0 +1,45 @@
+.home-carousel {
+  margin: 0;
+}
+
+.home-carousel .carousel-caption {
+  background-color: rgba(255, 255, 255, 0.7); /* fondo claro semitransparente */
+  color: #5f4b32; /* texto pastel suave */
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.home-carousel .carousel-caption h3 {
+  color: #7b6651; /* color título */
+  font-weight: 600;
+}
+
+.home-carousel .carousel-caption p {
+  color: #665a48;
+  font-size: 1rem;
+}
+
+.img-carousel {
+  width: 80vw;
+  height: 50vh;
+  object-fit: cover;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-image: none;
+}
+
+.carousel-control-prev-icon::after {
+  content: '‹';
+  color: #5f4b32;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.carousel-control-next-icon::after {
+  content: '›';
+  color: #5f4b32;
+  font-size: 2rem;
+  font-weight: 800;
+}
