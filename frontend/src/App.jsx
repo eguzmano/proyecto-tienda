@@ -1,6 +1,6 @@
 import { BrowserRouter } from 'react-router-dom'
 import './App.css'
-import { StoreBreadcrumb, StoreNavbar } from './components/index'
+import { NewProduct, StoreBreadcrumb, StoreNavbar } from './components/index'
 import { Home, Login, Register } from './pages/index'
 import AppProvider from './context/AppProvider'
 import Profile from './components/Profile/Profile'
@@ -13,10 +13,11 @@ const App = () => {
 
           <StoreNavbar />
           <StoreBreadcrumb />
-          {/* <Home /> */}
+          <Home />
           <Register />
           <Login />
           <Profile />
+          <NewProduct />
         </AppProvider>
 
       </BrowserRouter>

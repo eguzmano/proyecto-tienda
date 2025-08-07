@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react'
-import './Register.css'
-import { UserContext } from '../context/UserContext'
-import showToast from '../utils/showToast'
+import './Login.css'
+import { UserContext } from '../../context/UserContext'
+import showToast from '../../utils/showToast'
 
 const Login = () => {
   const [user, setUser] = useState({ email: '', password: '' })
@@ -35,7 +35,7 @@ const Login = () => {
   }
 
   return (
-    <div className='container mt-4'>
+    <div className='login-container mt-4'>
       <p className='fs-3 fw-bold'>Iniciar sesión</p>
       <form onSubmit={handleSubmit}>
         <div className='mb-3'>

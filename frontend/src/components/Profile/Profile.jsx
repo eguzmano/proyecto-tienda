@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../context/UserContext'
+import './Profile.css'
 
 const Profile = () => {
   const { user, getProfile, logout } = useContext(UserContext)
@@ -29,16 +30,54 @@ const Profile = () => {
   }
 
   return (
-    <div className='card text-center w-50 mx-auto mt-5'>
-      <div className='card-header'>
-        <h4 className='m-1'>Perfil</h4>
+    <div className='perfil-container'>
+      <div className='sidebar'>
+        <div className='perfil-img' />
+        <ul className='perfil-menu'>
+          <li>Datos Personales</li>
+          <li>Compras</li>
+          <li className='active'>Productos</li>
+          <li>Tarjetas</li>
+          <li>Direcciones</li>
+        </ul>
+        <div className='perfil-buttons'>
+          <button className='btn-perfil'>Borrar Cuenta</button>
+          <button className='btn-perfil'>Cerrar Sesion</button>
+        </div>
       </div>
-      <div className='card-body d-flex flex-column align-items-start'>
-        <h5 className='card-title my-3'>Usuario: {user.email}</h5>
-      </div>
-      <div className='card-footer text-body-secondary d-flex justify-content-between'>
-        <p className='my-auto'>Actualiza tus datos.</p>
-        <button className='btn btn-dark px-5' onClick={logout}>Cerrar sesión</button>
+
+      <div className='form-section'>
+        <form className='product-form'>
+          <div className='form-group'>
+            <label>Nombre</label>
+            <input type='text' />
+          </div>
+          <div className='form-row'>
+            <div className='form-group'>
+              <label>Precio</label>
+              <input type='number' />
+            </div>
+            <div className='form-group'>
+              <label>Stock</label>
+              <input type='number' />
+            </div>
+          </div>
+          <div className='form-group'>
+            <label>Categoria</label>
+            <input type='text' />
+          </div>
+          <div className='form-group'>
+            <label>Imagen</label>
+            <input type='text' placeholder='URL de imagen' />
+          </div>
+          <div className='form-group'>
+            <label>Detalle del producto</label>
+            <textarea rows='4' />
+          </div>
+          <div className='submit-container'>
+            <button className='btn-perfil'>Crear Publicacion</button>
+          </div>
+        </form>
       </div>
     </div>
   )

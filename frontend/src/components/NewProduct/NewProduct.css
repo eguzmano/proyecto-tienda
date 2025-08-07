@@ -1,0 +1,59 @@
+.product-form-container {
+  background-color: #fdfaf6; /* fondo suave */
+  border: 1px solid #e6e3dc;
+  border-radius: 20px;
+  padding: 2rem;
+  width: 50vw;
+  margin: 0 auto;
+  box-shadow: 0 0 10px rgba(217, 210, 200, 0.3);
+}
+
+.product-form-container h4 {
+  color: #5e4b44;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.product-form-container .form-label {
+  color: #4f403b;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.product-form-container .form-control,
+.product-form-container .form-select {
+  border-radius: 12px;
+  border: 1px solid #dcd5cb;
+  font-size: 0.95rem;
+  padding: 0.6rem 0.75rem;
+  background-color: #fff;
+  box-shadow: none;
+  transition: border 0.2s ease-in-out;
+}
+
+.product-form-container .form-control:focus,
+.product-form-container .form-select:focus {
+  border-color: #c8b6a6;
+  box-shadow: 0 0 0 0.15rem rgba(200, 182, 166, 0.25);
+}
+
+.product-form-container button {
+  background-color: #a67c6b;
+  border-color: #a67c6b;
+  border-radius: 14px;
+  padding: 0.6rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.product-form-container button:hover {
+  background-color: #8e695b;
+  border-color: #8e695b;
+}
+
+@media (max-width: 991.98px) {
+  .product-form-container {
+    width: 80vw;
+  }
+}
