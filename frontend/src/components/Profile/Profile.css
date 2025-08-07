@@ -1,0 +1,136 @@
+.perfil-container {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #fdfaf6;
+  border: 1px solid #e6e3dc;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(217, 210, 200, 0.3);
+  padding: 1.5rem;
+  gap: 2rem;
+}
+
+.sidebar {
+  width: 260px;
+  border-right: 1px solid #dcd5cb;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  border-radius: 16px;
+  background-color: #fff;
+}
+
+.perfil-img {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 2px solid #dcd5cb;
+  background-color: #f0ece8;
+  margin-bottom: 2rem;
+}
+
+.perfil-menu {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.perfil-menu li {
+  padding: 0.6rem;
+  margin: 0.3rem 0;
+  border-radius: 12px;
+  font-weight: 500;
+  color: #4f403b;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.perfil-menu li:hover,
+.perfil-menu li.active {
+  background-color: #f4eee9;
+  border: 1px solid #c8b6a6;
+}
+
+.perfil-buttons {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  align-items: center;
+}
+
+.btn-perfil {
+  background-color: #a67c6b;
+  border: 1px solid #a67c6b;
+  color: #fff;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.btn-perfil:hover {
+  background-color: #8e695b;
+  border-color: #8e695b;
+  color: #fff;
+}
+
+.form-section {
+  flex: 1;
+  padding: 1rem 1rem 1rem 0;
+  min-width: 300px;
+}
+
+.product-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  color: #4f403b;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.form-group input,
+.form-group textarea {
+  border-radius: 12px;
+  border: 1px solid #dcd5cb;
+  font-size: 0.95rem;
+  padding: 0.6rem 0.75rem;
+  background-color: #fff;
+  box-shadow: none;
+  transition: border 0.2s ease-in-out;
+  color: #4f403b;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #c8b6a6;
+  box-shadow: 0 0 0 0.15rem rgba(200, 182, 166, 0.25);
+  outline: none;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.submit-container {
+  display: flex;
+  justify-content: flex-end;
+}

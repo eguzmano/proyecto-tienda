@@ -1,8 +1,8 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Register.css'
-import { UserContext } from '../context/UserContext'
-import showToast from '../utils/showToast'
+import { UserContext } from '../../context/UserContext'
+import showToast from '../../utils/showToast'
 
 const Register = () => {
   const [users, setUsers] = useState({
@@ -50,7 +50,7 @@ const Register = () => {
   }
 
   return (
-    <div className='container mt-4'>
+    <div className='register-container mt-4'>
       <p className='fs-3 fw-bold'>Registro</p>
       <form onSubmit={handleSubmit}>
         <div className='mb-3'>
