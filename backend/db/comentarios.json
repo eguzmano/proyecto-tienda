@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "cliente_id": 1,
+        "producto_id": 1,
+        "comentario": "Buen producto, ideal para mi hija",
+        "calificacion": 4,
+        "fecha": "06-08-2025"
+    },
+    {
+        "id": 2,
+        "cliente_id": 1,
+        "producto_id": 1,
+        "comentario": "Bonito diseño pero el armado fue algo difícil.",
+        "calificacion": 3,
+        "fecha": "06-08-2025"
+    },
+    {
+        "id": 3,
+        "cliente_id": 1,
+        "producto_id": 2,
+        "comentario": "Llegó en el tiempo esperado. Todo perfecto.",
+        "calificacion": 5,
+        "fecha": "06-08-2025"
+    },
+    {
+        "id": 4,
+        "cliente_id": 2,
+        "producto_id": 2,
+        "comentario": "Un poco más pequeño de lo que imaginaba.",
+        "calificacion": 3,
+        "fecha": "06-08-2025"
+    },
+    {
+        "id": 5,
+        "cliente_id": 2,
+        "producto_id": 3,
+        "comentario": "Muy útil y resistente. Lo usamos todos los días.",
+        "calificacion": 4,
+        "fecha": "06-08-2025"
+    },
+    {
+        "id": 6,
+        "cliente_id": 3,
+        "producto_id": 3,
+        "comentario": "Buena relación precio-calidad.",
+        "calificacion": 4,
+        "fecha": "06-08-2025"
+    },
+    {
+        "id": 7,
+        "cliente_id": 1,
+        "producto_id": 3,
+        "comentario": "Los materiales se sienten de buena calidad.",
+        "calificacion": 5,
+        "fecha": "06-08-2025"
+    },
+    {
+        "id": 8,
+        "cliente_id": 2,
+        "producto_id": 4,
+        "comentario": "El color no coincidía con la imagen del sitio.",
+        "calificacion": 2,
+        "fecha": "06-08-2025"
+    },
+    {
+        "id": 9,
+        "cliente_id": 2,
+        "producto_id": 4,
+        "comentario": "Perfecto para espacios pequeños.",
+        "calificacion": 4,
+        "fecha": "06-08-2025"
+    }
+]

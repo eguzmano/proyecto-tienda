@@ -1,6 +1,6 @@
 [
   {
-    "id": "p001",
+    "id": "1",
     "nombre": "Cajonera alta",
     "descripcion": "✨ ¡Presentamos nuestra nueva cómoda para la habitación de tus pequeños! ✨\n\nDiseñada pensando en la seguridad y el estilo, esta cómoda no solo ofrece amplio espacio de almacenamiento, sino que también es perfecta para crear un ambiente acogedor y organizado. 🏠\n\nCaracterísticas destacadas:\n\n• Bordes redondeados para mayor seguridad.\n• Cajones amplios y de fácil deslizamiento.\n• Diseñada con materiales no tóxicos.\n• Estilo versátil que combina con cualquier decoración.\n\nPerfecta para guardar ropita, juguetes y todos esos pequeños tesoros que tú adoras. 👶🧸",
     "precio": 210000,
@@ -10,7 +10,7 @@
     "creado_en": "2025-08-05T23:00:00"
   },
   {
-    "id": "p002",
+    "id": "2",
     "nombre": "Juguetero 6 espacios",
     "descripcion": "¡Se acabaron los juguetes tirados por el suelo! Ahora no hay excusa, con este precioso mueble juguetero inspirado en la metodología Montessori. Organiza y enseña a tus peques a guardar mientras decoras.",
     "precio": 220900,
@@ -20,7 +20,7 @@
     "creado_en": "2025-08-05T23:00:00"
   },
   {
-    "id": "p003",
+    "id": "3",
     "nombre": "Mesa natural y 2 Sillas Preescolares",
     "descripcion": "Conjunto fabricado en madera natural. ¡Ideal para pequeños pintores, para jugar o para comer! Perfecta para momentos creativos y de aprendizaje en casa.",
     "precio": 85900,
@@ -30,7 +30,7 @@
     "creado_en": "2025-08-05T23:00:00"
   },
   {
-    "id": "p004",
+    "id": "4",
     "nombre": "Librero suelo",
     "descripcion": "Este mueble es genial: el niño puede escoger, sacar y guardar libros por sí solo, de forma cómoda y segura, fomentando autonomía y amor por la lectura.",
     "precio": 38900,
