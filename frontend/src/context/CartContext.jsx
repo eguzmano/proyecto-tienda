@@ -1,83 +1,98 @@
 import { createContext, useState, useEffect, useMemo } from 'react'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import Swal from 'sweetalert2'
+import 'sweetalert2/dist/sweetalert2.min.css'
 
 export const CartContext = createContext()
 
 const CartProvider = ({ children }) => {
-  const [pizzaCart, setPizzaCart] = useState([])
+  // Inicializa el carrito desde localStorage
+  const [cart, setCart] = useState(() => {
+    const storedCart = localStorage.getItem('cart')
+    return storedCart ? JSON.parse(storedCart) : []
+  })
   const [total, setTotal] = useState(0)
 
   useEffect(() => {
-    const newTotal = pizzaCart.reduce((acc, p) => acc + p.price * p.count, 0)
-    setTotal(newTotal)
-  }, [pizzaCart])
+    const newTotal = cart.reduce((acc, p) => acc + p.precio * p.count, 0)
+    setTotal(currentTotal => {
+      if (currentTotal !== newTotal) {
+        return newTotal
+      }
+      return currentTotal
+    })
+  }, [cart])
+
+  // Guarda el carrito en localStorage cada vez que cambie
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart))
+  }, [cart])
 
   const increaseQuantity = (id) => {
-    setPizzaCart(pizzaCart.map(p =>
+    setCart(cart.map(p =>
       p.id === id ? { ...p, count: p.count + 1 } : p
     ))
   }
 
   const decreaseQuantity = (id) => {
-    setPizzaCart(pizzaCart
+    setCart(cart
       .map(p => p.id === id ? { ...p, count: p.count - 1 } : p)
       .filter(p => p.count > 0)
     )
   }
 
-  const addToCart = (pizza) => {
-    setPizzaCart(prevCart => {
-      const exists = prevCart.find(p => p.id === pizza.id)
+  const addToCart = (product) => {
+    setCart(prevCart => {
+      const exists = prevCart.find(p => p.id === product.id)
+
+      const swalOptions = {
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 2000,
+        customClass: {
+          popup: 'custom-toast',
+          title: 'custom-title'
+        }
+      }
 
       if (exists) {
-        toast.info(`Se agregó otra ${pizza.name} 🍕 al carrito`, {
-          position: 'top-right',
-          autoClose: 2000,
-          containerId: 'customToastContainer',
-          offset: {
-            x: 20,
-            y: 150
-          },
-          style: { background: '#000', color: '#fff' }
+        Swal.fire({
+          ...swalOptions,
+          icon: 'info',
+          title: `Se agregó ${product.nombre} al carrito`
         })
         return prevCart.map(p =>
-          p.id === pizza.id ? { ...p, count: p.count + 1 } : p
+          p.id === product.id ? { ...p, count: p.count + 1 } : p
         )
       } else {
-        toast.success(`${pizza.name} añadida al carrito 🛒`, {
-          position: 'top-right',
-          autoClose: 2000,
-          containerId: 'customToastContainer',
-          offset: {
-            x: 20,
-            y: 150
-          },
-          style: { background: '#000', color: '#fff' }
+        Swal.fire({
+          ...swalOptions,
+          icon: 'success',
+          title: `${product.nombre} añadida al carrito 🛒`
         })
-        return [...prevCart, { ...pizza, count: 1 }]
+        return [...prevCart, { ...product, count: 1 }]
       }
     })
   }
 
   const removeAll = (id) => {
-    setPizzaCart(prevCart => prevCart.filter(p => p.id !== id))
+    setCart(prevCart => prevCart.filter(p => p.id !== id))
   }
 
   const clearCart = () => {
-    setPizzaCart([])
+    setCart([])
     setTotal(0)
   }
 
   const globalState = useMemo(() => ({
-    pizzaCart,
+    cart,
     increaseQuantity,
     decreaseQuantity,
     total,
     addToCart,
     removeAll,
     clearCart
-  }), [pizzaCart, total])
+  }), [cart, total])
 
   return (
     <CartContext.Provider value={globalState}>

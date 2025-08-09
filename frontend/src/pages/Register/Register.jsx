@@ -2,7 +2,8 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Register.css'
 import { UserContext } from '../../context/UserContext'
-import showToast from '../../utils/showToast'
+import Swal from 'sweetalert2'
+import 'sweetalert2/dist/sweetalert2.min.css'
 
 const Register = () => {
   const [users, setUsers] = useState({
@@ -19,33 +20,63 @@ const Register = () => {
     setUsers({ ...users, [e.target.name]: e.target.value })
   }
 
+  const swalOptions = {
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 2000,
+    customClass: {
+      popup: 'custom-toast',
+      title: 'custom-title'
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     const { name, lastname, email, password, repeatPassword } = users
 
     // Validaciones
     if (!name.trim() || !lastname.trim() || !email.trim() || !password.trim() || !repeatPassword.trim()) {
-      showToast('⚠️ Todos los campos son obligatorios!', 'error')
+      Swal.fire({
+        ...swalOptions,
+        icon: 'warning',
+        title: '⚠️ Todos los campos son obligatorios!'
+      })
       return
     }
     if (password !== repeatPassword) {
-      showToast('❌ Las contraseñas no coinciden!', 'error')
+      Swal.fire({
+        ...swalOptions,
+        icon: 'error',
+        title: '❌ Las contraseñas no coinciden!'
+      })
       return
     }
     if (password.length < 6) {
-      showToast('🔒 La contraseña debe tener al menos 6 caracteres', 'error')
+      Swal.fire({
+        ...swalOptions,
+        icon: 'error',
+        title: '🔒 La contraseña debe tener al menos 6 caracteres'
+      })
       return
     }
 
     try {
-      // Llamar a la función registerUser desde el contexto
       await register({ name, lastname, email, password })
-      showToast('✅ Usuario creado correctamente!', 'success')
+      Swal.fire({
+        ...swalOptions,
+        icon: 'success',
+        title: '✅ Usuario creado correctamente!'
+      })
       setUsers({ name: '', lastname: '', email: '', password: '', repeatPassword: '' })
       navigate('/')
     } catch (error) {
       const errorMsg = error.response?.data?.message || '❌ Error al registrar usuario'
-      showToast(errorMsg, 'error')
+      Swal.fire({
+        ...swalOptions,
+        icon: 'error',
+        title: errorMsg
+      })
     }
   }
 

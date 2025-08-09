@@ -1,0 +1,16 @@
+.card-cart {
+  max-width: 800px;
+}
+.card-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.card-body > h5, p {
+  margin: 0;
+}
+.cart-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}

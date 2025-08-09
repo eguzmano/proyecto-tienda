@@ -1,3 +1,7 @@
 export { default as Home } from './Home'
 export { default as Register } from './Register/Register'
 export { default as Login } from './Login/Login'
+export { default as Gallery } from './Gallery/Gallery'
+export { default as DetailProduct } from './DetailProduct/DetailProduct'
+export { default as Cart } from './Cart/Cart'
+export { default as Favorites } from './Favorites/Favorites'

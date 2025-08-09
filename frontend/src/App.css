@@ -22,3 +22,15 @@
   font-weight: 600;
   margin: 4rem auto 2rem auto;
 }
+.swal2-popup.custom-toast {
+  background: #D6EADF !important; /* Fondo claro */
+  color: #5a4636 !important;      /* Texto marrón oscuro */
+  border: 1px solid #e2d6c3 !important;
+  font-family: 'Quicksand', 'Nunito', Arial, sans-serif;
+  box-shadow: 0 2px 8px rgba(90,70,54,0.08);
+}
+.swal2-title.custom-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}

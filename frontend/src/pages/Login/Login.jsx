@@ -1,7 +1,8 @@
 import { useContext, useState } from 'react'
 import './Login.css'
 import { UserContext } from '../../context/UserContext'
-import showToast from '../../utils/showToast'
+import Swal from 'sweetalert2'
+import 'sweetalert2/dist/sweetalert2.min.css'
 
 const Login = () => {
   const [user, setUser] = useState({ email: '', password: '' })
@@ -15,12 +16,31 @@ const Login = () => {
     e.preventDefault()
 
     const { email, password } = user
+    const swalOptions = {
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 2000,
+      customClass: {
+        popup: 'custom-toast',
+        title: 'custom-title'
+      }
+    }
+
     if (!email.trim() || !password.trim()) {
-      showToast('⚠️ Todos los campos son obligatorios!', 'error')
+      Swal.fire({
+        ...swalOptions,
+        icon: 'warning',
+        title: '⚠️ Todos los campos son obligatorios!'
+      })
       return
     }
     if (password.length < 6) {
-      showToast('🔒 La contraseña debe tener al menos 6 caracteres', 'error')
+      Swal.fire({
+        ...swalOptions,
+        icon: 'error',
+        title: '🔒 La contraseña debe tener al menos 6 caracteres'
+      })
       return
     }
 
@@ -28,7 +48,11 @@ const Login = () => {
       await login(email, password)
     } catch (error) {
       console.error('Error al iniciar sesión:', error)
-      showToast('❌ Error en el inicio de sesión', 'error')
+      Swal.fire({
+        ...swalOptions,
+        icon: 'error',
+        title: '❌ Error en el inicio de sesión'
+      })
     }
 
     setUser({ email: '', password: '' })

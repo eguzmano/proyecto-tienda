@@ -7,7 +7,7 @@ const readProductos = async (req, res) => {
 
 const readProducto = async (req, res) => {
   const { id } = req.params;
-  const muebles = await pro.getProducto(id.toLowerCase());
+  const muebles = await productoModel.getProducto(id.toLowerCase());
   if (!muebles) {
     return res.status(404).json({ message: "Mueble not found" });
   }
