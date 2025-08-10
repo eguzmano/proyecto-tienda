@@ -35,16 +35,13 @@ const StoreNavbar = ({ isTransparent }) => {
                   <Nav.Link as={Link} to='/perfil'>Perfil</Nav.Link>
                   <Nav.Link as={Link} to='/favoritos'>Favoritos</Nav.Link>
                   <Nav.Link as={Link} to='/nuevo'>Nuevo Producto</Nav.Link>
-                  <Button className='btn-logout mx-2 text-nowrap' variant='outline-danger' onClick={logout}>Cerrar Sesion</Button>
                 </>
-
                 )
               : (
                 <>
                   <Nav.Link as={Link} to='/registro'>Registro</Nav.Link>
                   <Nav.Link as={Link} to='/ingresar'>Ingresar</Nav.Link>
                 </>
-
                 )}
             <NavDropdown title='Categorias' id='navbarScrollingDropdown'>
               <NavDropdown.Item as={Link} to='/categoria1'>Categoria 1</NavDropdown.Item>
@@ -53,21 +50,29 @@ const StoreNavbar = ({ isTransparent }) => {
               <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to='/categorias'>Todas los productos</NavDropdown.Item>
             </NavDropdown>
+          </Nav>
+          {/* Nuevo contenedor alineado a la derecha */}
+          <div className='d-flex align-items-center ms-auto gap-2'>
             <Link to='/cart'>
-              <button className='btn btn-outline-light'>
+              <button className='btn btn-outline-secondary'>
                 🛒 Total: ${formatNumber(total)}
               </button>
             </Link>
-          </Nav>
-          <Form className='d-flex'>
-            <Form.Control
-              type='search'
-              placeholder='Que andas buscando'
-              className='me-2'
-              aria-label='Search'
-            />
-            <Button variant='outline-success'><i className='bi bi-search' /></Button>
-          </Form>
+            {token && (
+              <Button className='btn-logout mx-2 text-nowrap' variant='outline-danger' onClick={logout}>
+                Cerrar Sesion
+              </Button>
+            )}
+            <Form className='d-flex ms-3'>
+              <Form.Control
+                type='search'
+                placeholder='Que andas buscando'
+                className='me-2 my-2'
+                aria-label='Search'
+              />
+              <Button variant='outline-success' className='btn-search'><i className='bi bi-search' /></Button>
+            </Form>
+          </div>
         </Navbar.Collapse>
       </Container>
     </Navbar>

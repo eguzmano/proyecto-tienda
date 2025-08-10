@@ -3,7 +3,7 @@ import './Footer.css'
 
 const Footer = () => {
   return (
-    <footer className='footer'>
+    <footer className='footer mt-5'>
       <div className='footer-container'>
         <div className='footer-section d-flex'>
           <img src={logo} alt='Cuncuna' className='footer-logo' />

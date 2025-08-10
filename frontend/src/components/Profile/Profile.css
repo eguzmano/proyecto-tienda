@@ -1,136 +1,146 @@
-.perfil-container {
+.profile-main-container {
   display: flex;
-  flex-wrap: wrap;
-  background-color: #fdfaf6;
-  border: 1px solid #e6e3dc;
-  border-radius: 20px;
-  box-shadow: 0 0 10px rgba(217, 210, 200, 0.3);
-  padding: 1.5rem;
-  gap: 2rem;
+  background: #D6EADF;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(90,70,54,0.08);
+  padding: 32px;
+  margin: 40px auto;
+  max-width: 900px;
+  min-height: 400px;
+  font-family: 'Quicksand', 'Nunito', Arial, sans-serif;
 }
 
-.sidebar {
-  width: 260px;
-  border-right: 1px solid #dcd5cb;
+.profile-sidebar {
+  flex: 0 0 240px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem 1rem;
+  background: #ffffff; /* Rosa pastel */
   border-radius: 16px;
-  background-color: #fff;
+  padding: 24px 12px;
+  margin-right: 32px;
+  box-shadow: 0 1px 4px rgba(90,70,54,0.06);
 }
 
-.perfil-img {
-  width: 160px;
-  height: 160px;
+.profile-image-wrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.profile-image {
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  border: 2px solid #dcd5cb;
-  background-color: #f0ece8;
-  margin-bottom: 2rem;
+  object-fit: cover;
+  border: 3px solid #fff4cc; /* Amarillo pálido */
+  background: #fff4cc;
 }
 
-.perfil-menu {
-  list-style: none;
-  padding: 0;
+.edit-icon {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: #d6eadf; /* Rosa pastel */
+  border-radius: 50%;
+  padding: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: 2px solid #d6eadf; /* Verde menta */
+}
+.edit-icon:hover {
+  background: #b5dac5; /* Verde menta */
+}
+
+.profile-menu {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.profile-menu-btn {
+  font-family: 'Quicksand', 'Nunito', Arial, sans-serif;
+  color: #8c7c6e; /* Gris cálido */
+  border-color: #fff4cc; /* Amarillo pálido */
+  background: #fff;
+  margin-bottom: 10px;
+  font-weight: 500;
+  border-radius: 10px;
+  transition: background 0.2s, color 0.2s;
+}
+.profile-menu-btn:hover {
+  background: #d6eadf; /* Verde menta */
+  color: #5e4631; /* Marrón suave */
+}
+
+.delete-account-btn {
+  font-size: 0.95rem;
+  border-radius: 8px;
+  width: 100%;
+  color: #ffffff;
+  border: 1.5px solid #a67c6b;
+  background: #a67c6b;
+  font-family: 'Quicksand', 'Nunito', Arial, sans-serif;
+  margin-top: 20px;
+  transition: background 0.2s, color 0.2s;
+}
+.delete-account-btn:hover {
+  background: #8e695b; /* Rosa pastel */
+  color: #ffffff;
+  border-color: #8e695b;
+}
+
+.profile-content {
+  flex: 1;
+  background: #ffffff; /* Amarillo pálido */
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 1px 4px rgba(90,70,54,0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.profile-title {
+  color: #5e4631; /* Marrón suave */
+  font-family: 'Quicksand', 'Nunito', Arial, sans-serif;
+  font-weight: 700;
   text-align: center;
 }
 
-.perfil-menu li {
-  padding: 0.6rem;
-  margin: 0.3rem 0;
-  border-radius: 12px;
+.form-label {
+  color: #8c7c6e; /* Gris cálido */
   font-weight: 500;
-  color: #4f403b;
-  cursor: pointer;
-  transition: background-color 0.2s;
 }
 
-.perfil-menu li:hover,
-.perfil-menu li.active {
-  background-color: #f4eee9;
-  border: 1px solid #c8b6a6;
-}
-
-.perfil-buttons {
-  margin-top: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
-  align-items: center;
-}
-
-.btn-perfil {
-  background-color: #a67c6b;
-  border: 1px solid #a67c6b;
-  color: #fff;
-  font-weight: 600;
-  padding: 0.6rem 1.2rem;
+.form-control {
   border-radius: 12px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-}
-
-.btn-perfil:hover {
-  background-color: #8e695b;
-  border-color: #8e695b;
-  color: #fff;
-}
-
-.form-section {
-  flex: 1;
-  padding: 1rem 1rem 1rem 0;
-  min-width: 300px;
-}
-
-.product-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-.form-group label {
-  color: #4f403b;
-  font-size: 0.95rem;
-  margin-bottom: 0.25rem;
-}
-
-.form-group input,
-.form-group textarea {
-  border-radius: 12px;
-  border: 1px solid #dcd5cb;
-  font-size: 0.95rem;
+  border: 1px solid #fff4cc; /* Amarillo pálido */
+  font-size: 1rem;
   padding: 0.6rem 0.75rem;
-  background-color: #fff;
-  box-shadow: none;
-  transition: border 0.2s ease-in-out;
-  color: #4f403b;
+  background-color: #f7ede2; /* Rosa pastel */
+  color: #5e4631; /* Marrón suave */
+  margin-bottom: 18px;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
-  border-color: #c8b6a6;
-  box-shadow: 0 0 0 0.15rem rgba(200, 182, 166, 0.25);
+.form-control:focus {
+  border-color: #d6eadf; /* Verde menta */
+  box-shadow: 0 0 0 0.15rem rgba(214,234,223,0.25);
   outline: none;
 }
 
-.form-row {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
+.logout-btn {
+  border-radius: 8px;
+  font-weight: 600;
+  background: #5e4631; /* Marrón suave */
+  color: #fff;
+  border: none;
+  padding: 0.7rem 0;
+  width: 100%;
+  margin-top: 18px;
+  font-size: 1.1rem;
+  transition: background 0.2s;
 }
-
-.form-row .form-group {
-  flex: 1;
-}
-
-.submit-container {
-  display: flex;
-  justify-content: flex-end;
+.logout-btn:hover {
+  background: #8c7c6e; /* Gris cálido */
 }

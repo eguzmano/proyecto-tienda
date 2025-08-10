@@ -79,7 +79,13 @@ const me = async (req, res) => {
   try {
     const { email } = req.user;
     const user = await authModel.getUserByEmail(email);
-    return res.json({ email, id: user.id });
+    // Retorna también name y lastname
+    return res.json({
+      id: user.id,
+      name: user.name,
+      lastname: user.lastname,
+      email: user.email
+    });
   } catch (error) {
     return res.status(500).json({ error: "Server error" });
   }

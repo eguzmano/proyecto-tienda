@@ -83,6 +83,7 @@ const UserProvider = ({ children }) => {
       const { data } = await axios.get('http://localhost:5000/api/auth/me', {
         headers: { Authorization: `Bearer ${token}` }
       })
+      console.log('Datos recibidos:', data)
       setUser(data)
     } catch (error) {
       console.error('Error al obtener perfil:', error)

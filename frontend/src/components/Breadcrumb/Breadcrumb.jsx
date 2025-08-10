@@ -17,7 +17,7 @@ const StoreBreadcrumb = () => {
   }
 
   return (
-    <Breadcrumb className='my-3'>
+    <Breadcrumb className='my-3 mx-5'>
       <Breadcrumb.Item as={Link} to='/'>Inicio</Breadcrumb.Item>
 
       {pathnames.map((name, index) => {
