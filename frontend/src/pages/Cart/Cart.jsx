@@ -107,7 +107,7 @@ const Cart = () => {
             >
               Pagar
             </button>
-          </>
+            </>
           : null}
       </div>
     </div>

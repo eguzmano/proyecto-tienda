@@ -10,14 +10,13 @@ const Gallery = () => {
     <div className='cards'>
       {products?.length > 0
         ? (
-            products.map(({ nombre, img, precio, descripcion, id }) => (
+            products.map(({ nombre, img, precio, id }) => (
               <CardProduct
                 key={id}
                 id={id}
                 nombre={nombre}
                 img={img}
                 precio={precio}
-                descripcion={descripcion}
               />
             ))
           )

@@ -7,6 +7,10 @@
   height: 100%;
   max-height: 30rem;
   object-fit: cover;
-
-
+}
+.card-body-featured {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  min-height: 250px;
 }

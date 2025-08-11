@@ -1,6 +1,7 @@
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 import './Header.css'
+import { Link } from 'react-router-dom'
 
 const Header = () => {
   return (
@@ -8,12 +9,11 @@ const Header = () => {
       <div className='header-img'>
         <Card.ImgOverlay className='d-flex flex-column justify-content-center'>
           <Card.Title>Cuncuna</Card.Title>
-          <div className='text-card fs-4'>
-            This is a wider card with supporting text below as a natural lead-in
-            to additional content. This content is a little bit longer.
+          <div className='text-card fs-3'>
+            Muebles para los mas pequeños.
           </div>
           <div>
-            <Button className='btn'>Shop Now</Button>
+            <Button className='btn' as={Link} to='/productos'>Ver Mas</Button>
           </div>
         </Card.ImgOverlay>
       </div>

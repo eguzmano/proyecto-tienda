@@ -44,25 +44,25 @@ const StoreNavbar = ({ isTransparent }) => {
                 </>
                 )}
             <NavDropdown title='Categorias' id='navbarScrollingDropdown'>
-              <NavDropdown.Item as={Link} to='/categoria1'>Categoria 1</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to='/categoria2'>Categoria 2</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to='/categoria3'>Categoria 3</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/categoria1' disabled>Categoria 1</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/categoria2' disabled>Categoria 2</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/categoria3' disabled>Categoria 3</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to='/categorias'>Todas los productos</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/productos'>Todas los productos</NavDropdown.Item>
             </NavDropdown>
           </Nav>
           {/* Nuevo contenedor alineado a la derecha */}
           <div className='d-flex align-items-center ms-auto gap-2'>
-            <Link to='/cart'>
-              <button className='btn btn-outline-secondary'>
-                🛒 Total: ${formatNumber(total)}
-              </button>
-            </Link>
             {token && (
               <Button className='btn-logout mx-2 text-nowrap' variant='outline-danger' onClick={logout}>
                 Cerrar Sesion
               </Button>
             )}
+            <Link to='/cart'>
+              <button className='btn btn-outline-secondary'>
+                🛒 Total: ${formatNumber(total)}
+              </button>
+            </Link>
             <Form className='d-flex ms-3'>
               <Form.Control
                 type='search'

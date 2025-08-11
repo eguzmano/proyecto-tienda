@@ -7,7 +7,6 @@
   margin: 40px auto;
   max-width: 900px;
   min-height: 400px;
-  font-family: 'Quicksand', 'Nunito', Arial, sans-serif;
 }
 
 .profile-sidebar {
@@ -59,7 +58,6 @@
 }
 
 .profile-menu-btn {
-  font-family: 'Quicksand', 'Nunito', Arial, sans-serif;
   color: #8c7c6e; /* Gris cálido */
   border-color: #fff4cc; /* Amarillo pálido */
   background: #fff;
@@ -80,7 +78,6 @@
   color: #ffffff;
   border: 1.5px solid #a67c6b;
   background: #a67c6b;
-  font-family: 'Quicksand', 'Nunito', Arial, sans-serif;
   margin-top: 20px;
   transition: background 0.2s, color 0.2s;
 }
@@ -103,7 +100,6 @@
 
 .profile-title {
   color: #5e4631; /* Marrón suave */
-  font-family: 'Quicksand', 'Nunito', Arial, sans-serif;
   font-weight: 700;
   text-align: center;
 }
@@ -143,4 +139,45 @@
 }
 .logout-btn:hover {
   background: #8c7c6e; /* Gris cálido */
+}
+
+.custom-modal-popup {
+  background: #fdf6ec; /* Beige claro */
+  border-radius: 18px;
+}
+
+.custom-modal-title {
+  color: #5e4631; /* Marrón suave */
+  font-weight: 700;
+}
+
+.custom-modal-confirm {
+  background: #a67c6b; /* Marrón suave */
+  color: #fff;
+  border-radius: 10px;
+  font-weight: 600;
+  border: none;
+}
+
+
+.custom-modal-cancel {
+  background: #a67c6b;
+  color: #fff;
+  border: 1.5px solid #a67c6b;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.custom-modal-confirm:hover,
+.custom-modal-cancel:hover {
+  background: #8e695b; /* Rosa pastel */
+  color: #fff;
+  border-color: #8e695b;
+}
+
+.custom-modal-input {
+  background: #fff;
+  color: #5e4631;
+  border-radius: 10px;
+  border: 1px solid #e2d6c3;
 }

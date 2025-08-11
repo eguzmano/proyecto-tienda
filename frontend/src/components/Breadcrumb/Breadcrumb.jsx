@@ -1,11 +1,13 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
+import { ArrowLeft } from 'react-bootstrap-icons'
+import './Breadcrumb.css'
 
 const StoreBreadcrumb = () => {
   const location = useLocation()
+  const navigate = useNavigate()
   const pathnames = location.pathname.split('/').filter(x => x)
 
-  // Diccionario de nombres amigables
   const nameMap = {
     productos: 'Productos',
     categorias: 'Categorías',
@@ -13,31 +15,40 @@ const StoreBreadcrumb = () => {
     perfil: 'Perfil',
     favoritos: 'Favoritos',
     nuevo: 'Nuevo Producto'
-    // Puedes agregar más según tus rutas
   }
 
   return (
-    <Breadcrumb className='my-3 mx-5'>
-      <Breadcrumb.Item as={Link} to='/'>Inicio</Breadcrumb.Item>
-
-      {pathnames.map((name, index) => {
-        const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`
-        const isLast = index === pathnames.length - 1
-        const displayName = nameMap[name] || decodeURIComponent(name)
-
-        return isLast
-          ? (
-            <Breadcrumb.Item active key={name}>
-              {displayName}
-            </Breadcrumb.Item>
-            )
-          : (
-            <Breadcrumb.Item as={Link} to={routeTo} key={name}>
-              {displayName}
-            </Breadcrumb.Item>
-            )
-      })}
-    </Breadcrumb>
+    <div className='store-breadcrumb-container d-flex align-items-center my-3 mx-5'>
+      {pathnames.length > 0 && (
+        <button
+          className='btn btn-link p-0 me-3'
+          onClick={() => navigate(-1)}
+          aria-label='Volver'
+          style={{ fontSize: '1.4rem', textDecoration: 'none' }}
+        >
+          <ArrowLeft />
+        </button>
+      )}
+      <Breadcrumb className='mt-3'>
+        <Breadcrumb.Item linkAs={Link} to='/'>Inicio</Breadcrumb.Item>
+        {pathnames.map((name, index) => {
+          const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`
+          const isLast = index === pathnames.length - 1
+          const displayName = nameMap[name] || decodeURIComponent(name)
+          return isLast
+            ? (
+              <Breadcrumb.Item active key={name}>
+                {displayName}
+              </Breadcrumb.Item>
+              )
+            : (
+              <Breadcrumb.Item linkAs={Link} to={routeTo} key={name}>
+                {displayName}
+              </Breadcrumb.Item>
+              )
+        })}
+      </Breadcrumb>
+    </div>
   )
 }
 
