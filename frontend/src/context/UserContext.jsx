@@ -80,7 +80,7 @@ const UserProvider = ({ children }) => {
 
   const getProfile = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/auth/me', {
+      const { data } = await axios.get('http://localhost:5000/api/user/me', {
         headers: { Authorization: `Bearer ${token}` }
       })
       console.log('Datos recibidos:', data)

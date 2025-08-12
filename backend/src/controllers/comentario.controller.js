@@ -1,4 +1,4 @@
-import { comentarioModel } from "../models/comentarios.model.js";
+import { comentarioModel } from "../../src/models/comentarios.model.js";
 
 const readComentarios = async (req, res) => {
   const comentarios = await comentarioModel.getComentarios();
