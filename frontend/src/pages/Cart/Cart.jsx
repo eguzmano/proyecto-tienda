@@ -5,7 +5,7 @@ import { useContext } from 'react'
 import { CartContext } from '../../context/CartContext'
 import { UserContext } from '../../context/UserContext'
 import axios from 'axios'
-import showToast from '../../utils/showToast'
+import Swal from 'sweetalert2'
 
 const Cart = () => {
   const { cart, total, increaseQuantity, decreaseQuantity, removeAll, clearCart } = useContext(CartContext)
@@ -24,12 +24,24 @@ const Cart = () => {
       console.log('Respuesta del Backend:', checkoutData)
       console.log('Detalle del pedido:', checkoutData.cart.items)
 
-      showToast('✅ Su pedido se ha procesado con exito', 'success')
+      Swal.fire({
+        icon: 'success',
+        title: '!Felicidades eres el cliente N° 1!',
+        text: '¡Tu pedido sera gratuito!',
+        timer: 4500,
+        showConfirmButton: true
+      })
 
       clearCart()
     } catch (error) {
       console.error(error)
-      showToast('❌ Error al procesar el pago', 'error')
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: '❌ Error al procesar el pago',
+        timer: 2500,
+        showConfirmButton: false
+      })
     }
   }
 
@@ -37,7 +49,13 @@ const Cart = () => {
     if (total > 0) {
       handleSubmit()
     } else {
-      showToast('⚠️ El carrito esta vacio', 'error')
+      Swal.fire({
+        icon: 'warning',
+        title: 'Carrito vacío',
+        text: '⚠️ El carrito está vacío',
+        timer: 2000,
+        showConfirmButton: false
+      })
     }
   }
 
@@ -93,21 +111,22 @@ const Cart = () => {
       {token ? '' : <h5>Para continuar con el pago debes iniciar sesion</h5>}
       <div className='d-flex justify-content-center'>
         {(cart.length !== 0)
-          ? <>
-            <button
-              className='btn btn-dark px-4 align-self-center'
-              onClick={clearCart}
-            >
-              Vaciar carrito
-            </button>
-            <button
-              className='btn btn-dark px-5 align-self-center'
-              onClick={pay}
-              disabled={!token}
-            >
-              Pagar
-            </button>
-            </>
+          ? (
+            <>
+              <button
+                className='btn btn-dark px-4 align-self-center me-5'
+                onClick={clearCart}
+              >
+                Vaciar carrito
+              </button>
+              <button
+                className='btn btn-dark px-5 align-self-center'
+                onClick={pay}
+                disabled={!token}
+              >
+                Pagar
+              </button>
+            </>)
           : null}
       </div>
     </div>

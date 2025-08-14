@@ -22,7 +22,6 @@ const UserProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem('token'))
   const navigate = useNavigate()
 
-  // maneja la respuesta de autenticación
   const authResponse = (data, redirectPath = '/perfil') => {
     if (data?.token) {
       setToken(data.token)

@@ -6,7 +6,6 @@ const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([])
   const [product, setProduct] = useState(null)
 
-  // Obtiene todos los productos
   const fetchProducts = async () => {
     try {
       const res = await fetch('http://localhost:5000/api/productos')
@@ -17,7 +16,6 @@ const ProductProvider = ({ children }) => {
     }
   }
 
-  // Obtiene un producto por ID
   const fetchProduct = async (id) => {
     try {
       const res = await fetch(`http://localhost:5000/api/productos/${id}`)
@@ -29,12 +27,10 @@ const ProductProvider = ({ children }) => {
     }
   }
 
-  // Carga todos los productos al montar el provider
   useEffect(() => {
     fetchProducts()
   }, [])
 
-  // Permite limpiar el producto seleccionado (opcional)
   const clearProduct = () => setProduct(null)
 
   const globalState = useMemo(() => ({

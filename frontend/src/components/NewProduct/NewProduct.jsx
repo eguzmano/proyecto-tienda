@@ -20,7 +20,6 @@ const NewProduct = ({ onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     onSubmit(product)
-    // Reset form (opcional)
     setProduct({
       name: '',
       description: '',

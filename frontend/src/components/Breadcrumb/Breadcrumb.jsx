@@ -11,7 +11,7 @@ const StoreBreadcrumb = () => {
   const nameMap = {
     productos: 'Productos',
     categorias: 'Categorías',
-    carrito: 'Carrito',
+    cart: 'Carrito',
     perfil: 'Perfil',
     favoritos: 'Favoritos',
     nuevo: 'Nuevo Producto'
