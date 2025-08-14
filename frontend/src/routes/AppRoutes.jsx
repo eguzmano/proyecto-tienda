@@ -17,8 +17,8 @@ const AppRoutes = () => {
           <Route path='/nuevo' element={<NewProduct />} />
         </Route>
         <Route path='/cart' element={<Cart />} />
-        <Route path='/pizza/:id' element={<DetailProduct />} />
-        <Route path='/categorias' element={<Gallery />} />
+        <Route path='/productos/:id' element={<DetailProduct />} />
+        <Route path='/productos' element={<Gallery />} />
 
         {/* <Route path='/*' element={<NotFound />} /> */}
       </Routes>

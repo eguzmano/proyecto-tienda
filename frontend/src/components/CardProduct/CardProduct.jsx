@@ -4,7 +4,7 @@ import { useContext } from 'react'
 import { CartContext } from '../../context/CartContext'
 import { useNavigate } from 'react-router-dom'
 
-const CardProduct = ({ nombre, precio, descripcion, img, id }) => {
+const CardProduct = ({ nombre, precio, img, id }) => {
   const { addToCart } = useContext(CartContext)
   const navigate = useNavigate()
 
@@ -18,7 +18,7 @@ const CardProduct = ({ nombre, precio, descripcion, img, id }) => {
           <li className='list-group-item'>Precio: ${formatNumber(precio)}</li>
         </ul>
         <div className='buttons'>
-          <button className='btn btn-light' onClick={() => navigate(`/pizza/${id}`)}>Ver mas 👀</button>
+          <button className='btn btn-light me-3' onClick={() => navigate(`/productos/${id}`)}>Ver mas 👀</button>
           <button className='btn btn-dark' onClick={() => addToCart({ id, nombre, precio, img })}>Añadir al 🛒</button>
         </div>
       </div>

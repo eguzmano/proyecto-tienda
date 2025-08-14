@@ -2,15 +2,14 @@ import { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../context/UserContext'
 import { Button, Form } from 'react-bootstrap'
 import { PencilSquare } from 'react-bootstrap-icons'
+import Swal from 'sweetalert2'
 import './Profile.css'
 
 const Profile = () => {
   const { user, getProfile } = useContext(UserContext)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [showModal, setShowModal] = useState(false)
   const [preview, setPreview] = useState(null)
-  const [profileImage, setProfileImage] = useState(null)
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -25,12 +24,31 @@ const Profile = () => {
     fetchProfile()
   }, [])
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setProfileImage(file)
-      setPreview(URL.createObjectURL(file))
-    }
+  const handleEditImage = () => {
+    Swal.fire({
+      title: 'Cargar imagen de perfil',
+      html: `
+        <input id="swal-input-url" class="swal2-input" placeholder="URL de la imagen" type="url" />
+        <img id="swal-preview-img" src="${preview || user.imageUrl || 'https://placehold.co/120x120?text=Foto'}" alt="Vista previa" style="width:120px;height:120px;border-radius:50%;margin-top:1rem;object-fit:cover;" />
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'Aceptar',
+      cancelButtonText: 'Cancelar',
+      customClass: {
+        popup: 'custom-modal-popup',
+        title: 'custom-modal-title',
+        confirmButton: 'custom-modal-confirm',
+        cancelButton: 'custom-modal-cancel',
+        input: 'custom-modal-input'
+      },
+      didOpen: () => {
+        const input = document.getElementById('swal-input-url')
+        const img = document.getElementById('swal-preview-img')
+        input.addEventListener('input', (e) => {
+          img.src = e.target.value || 'https://placehold.co/120x120?text=Foto'
+        })
+      }
+    })
   }
 
   if (loading) return <p>⏳ Cargando perfil...</p>
@@ -45,7 +63,7 @@ const Profile = () => {
             alt='Foto de perfil'
             className='profile-image'
           />
-          <div className='edit-icon' onClick={() => setShowModal(true)}>
+          <div className='edit-icon' onClick={handleEditImage}>
             <PencilSquare size={22} />
           </div>
         </div>
@@ -64,16 +82,15 @@ const Profile = () => {
             <Form.Label>Nombre</Form.Label>
             <Form.Control type='text' value={user.name || ''} disabled />
           </Form.Group>
-          <Form.Group className='mb-3' controlId='formLastname'>
+          {/* <Form.Group className='mb-3' controlId='formLastname'>
             <Form.Label>Apellido</Form.Label>
             <Form.Control type='text' value={user.lastname || ''} disabled />
-          </Form.Group>
+          </Form.Group> */}
           <Form.Group className='mb-3' controlId='formEmail'>
             <Form.Label>Correo</Form.Label>
             <Form.Control type='email' value={user.email || ''} disabled />
           </Form.Group>
         </Form>
-
       </div>
     </div>
   )

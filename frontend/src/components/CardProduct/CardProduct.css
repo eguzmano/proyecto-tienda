@@ -2,6 +2,17 @@
   width: 18rem;
   border: 1px solid #0000006f;
 }
-.btn-light {
-  border: 1px solid #000000;
+.btn-light, .btn-dark {
+  border: 1px solid #5E4631;
+  color: #5E4631;
+  font-weight: 500;
+  background-color: #D6EADF;
 }
+
+.btn-light:hover,
+.btn-dark:hover {
+  border:#D6EADF;
+  color: #D6EADF;
+  background-color: #5E4631;
+}
+

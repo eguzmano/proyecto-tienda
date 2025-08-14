@@ -22,7 +22,6 @@ const UserProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem('token'))
   const navigate = useNavigate()
 
-  // maneja la respuesta de autenticación
   const authResponse = (data, redirectPath = '/perfil') => {
     if (data?.token) {
       setToken(data.token)
@@ -83,7 +82,6 @@ const UserProvider = ({ children }) => {
       const { data } = await axios.get('http://localhost:5000/api/user/me', {
         headers: { Authorization: `Bearer ${token}` }
       })
-      console.log('Datos recibidos:', data)
       setUser(data)
     } catch (error) {
       console.error('Error al obtener perfil:', error)

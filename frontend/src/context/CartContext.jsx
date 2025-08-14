@@ -5,7 +5,6 @@ import 'sweetalert2/dist/sweetalert2.min.css'
 export const CartContext = createContext()
 
 const CartProvider = ({ children }) => {
-  // Inicializa el carrito desde localStorage
   const [cart, setCart] = useState(() => {
     const storedCart = localStorage.getItem('cart')
     return storedCart ? JSON.parse(storedCart) : []
@@ -22,7 +21,6 @@ const CartProvider = ({ children }) => {
     })
   }, [cart])
 
-  // Guarda el carrito en localStorage cada vez que cambie
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart))
   }, [cart])
