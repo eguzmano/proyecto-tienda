@@ -1,4 +1,4 @@
-CREATE DATABASE cuncunaDB;
+CREATE DATABASE "cuncunaDB";
 
 -- Crear FKs directamente dentro de cada CREATE TABLE (PostgreSQL)
 
