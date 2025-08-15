@@ -10,7 +10,7 @@ const ProductProvider = ({ children }) => {
     try {
       const res = await fetch('http://localhost:5000/api/productos')
       const data = await res.json()
-      setProducts(data)
+      setProducts(data.productos)
     } catch (error) {
       console.log('Error fetching products:', error)
     }

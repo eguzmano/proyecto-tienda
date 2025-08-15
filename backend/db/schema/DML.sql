@@ -5,6 +5,7 @@ INSERT INTO "roles" ("id","nombre") VALUES
 -- Clientes (para comentarios: ids 1,2,3)
 INSERT INTO clientes (nombre, email, password, direccion, telefono, rol_id, creado_en) VALUES
 ('Ana Pérez','ana.perez@example.com','hash1','Av. Siempre Viva 123','+56911111111',1,NOW()),
+('Admin','admin@example.com','123123','Av. Siempre Viva 123','+56911111111',2,NOW()),
 ('Luis Soto','luis.soto@example.com','hash2','Calle Falsa 456','+56922222222',1,NOW()),
 ('María Rojas','maria.rojas@example.com','hash3','Pasaje Los Pinos 789','+56933333333',1,NOW());
 

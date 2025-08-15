@@ -1,20 +1,27 @@
-import { productoModel } from "../models/producto.model.js";
+import { getProducto, getProductos } from "../models/producto.model.js";
 
-const readProductos = async (req, res) => {
-  const muebles = await productoModel.getProductos();
-  res.json(muebles);
-};
-
-const readProducto = async (req, res) => {
-  const { id } = req.params;
-  const muebles = await productoModel.getProducto(id.toLowerCase());
-  if (!muebles) {
-    return res.status(404).json({ message: "Mueble not found" });
+export const readProductos = async (req, res) => {
+  try {
+    const productos = await getProductos()
+    res.status(200).json({ productos })
+  } catch (error) {
+    res.status(500).json({ error: 'Error al procesar la solicitud' })
   }
-  res.json(muebles);
 };
 
-export const productoController = {
-  readProductos,
-  readProducto,
+export const readProducto = async (req, res) => {
+  try {
+    const { id } = req.params
+    if(!id){
+      return res.status(400).json({ error: 'Producto ID es requerido' })
+    }
+    const producto = await getProducto(id)
+    res
+      .status(!travel ? 404 : 200)
+      .json(!travel ? { error: 'Producto no encontrado' } : { producto })
+
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
 };
+
