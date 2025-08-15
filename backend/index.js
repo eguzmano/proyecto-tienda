@@ -22,7 +22,7 @@ app.use("/api/auth", authRoute);
 // Usuarios: perfil y CRUD
 app.use("/api/user", usuariosRouter);
 
-app.use("/api/productos", productoRoute ); 
+app.use("/api/productos", productoRoute); 
 app.use("/api/comentarios", cometarioRoute);
 app.use((_, res) => {
   res.status(404).json({ error: "Not Found" });
