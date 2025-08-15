@@ -5,7 +5,7 @@ import { cuncunaLogs } from './middlewares/log.middleware.js'
 
 import authRoute from "./routes/auth.route.js";
 import usuariosRouter from './routes/clientes.route.js'
-
+import categoriaRoute from "./routes/categoria.route.js"
 
 import productoRoute from "./routes/producto.route.js";
 import cometarioRoute from "./routes/comentario.route.js";
@@ -21,6 +21,9 @@ app.use("/api/auth", authRoute);
 
 // Usuarios: perfil y CRUD
 app.use("/api/user", usuariosRouter);
+
+//Categorias
+app.use("/api/categorias", categoriaRoute)
 
 app.use("/api/productos", productoRoute); 
 app.use("/api/comentarios", cometarioRoute);

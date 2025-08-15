@@ -5,8 +5,6 @@ import jwt from 'jsonwebtoken'
 export const registerCliente = async (req, res) => {
   try {
     const { nombre, email, password, direccion, telefono } = req.body
-
-    // Crea usuario (asegúrate que el model hashea el password)
     const user = await createClienteModel(nombre, email, password, direccion, telefono)
     // user debería traer al menos { id, nombre, email, rol_id }
 
@@ -49,3 +47,30 @@ export const getClienteProfile = async (req, res) => {
          res.status(500).json({ error: error.message })
     }
 }
+
+export const registerAdmin = async (req, res) => {
+  try {
+    const { nombre, email, password, direccion, telefono } = req.body;
+
+    const user = await createClienteModel(nombre, email, password, direccion, telefono, 2); // rol_id = 2
+
+    const token = jwt.sign(
+      { email: user.email, id: user.id },
+      process.env.JWT_SECRET,
+      { expiresIn: '1d' }
+    );
+
+    return res.status(201).json({
+      token,
+      email: user.email,
+      user: {
+        id: user.id,
+        nombre: user.nombre,
+        email: user.email,
+        rol_id: user.rol_id
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ message: 'Error interno al registrar admin' });
+  }
+};

@@ -1,7 +1,3 @@
-CREATE DATABASE "cuncunaDB";
-
--- Crear FKs directamente dentro de cada CREATE TABLE (PostgreSQL)
-
 CREATE TABLE "roles" (
   "id" SERIAL PRIMARY KEY,
   "nombre" varchar UNIQUE
@@ -14,8 +10,8 @@ CREATE TABLE "clientes" (
   "password" varchar,
   "direccion" text,
   "telefono" varchar,
-  "rol_id" integer,
-  "creado_en" timestamp,
+  "rol_id" integer DEFAULT 1,
+  "creado_en" timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT "fk_clientes_rol" FOREIGN KEY ("rol_id") REFERENCES "roles" ("id")
 );
 
@@ -33,7 +29,7 @@ CREATE TABLE "productos" (
   "stock" integer,
   "imagen_url" varchar,
   "categoria_id" integer,
-  "creado_en" timestamp,
+  "creado_en" timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT "fk_productos_categoria" FOREIGN KEY ("categoria_id") REFERENCES "categorias" ("id")
 );
 
@@ -52,8 +48,10 @@ CREATE TABLE "detalle_venta" (
   "producto_id" integer,
   "cantidad" integer,
   "precio_unitario" decimal,
-  CONSTRAINT "fk_detalle_venta_venta" FOREIGN KEY ("venta_id") REFERENCES "ventas" ("id"),
-  CONSTRAINT "fk_detalle_venta_producto" FOREIGN KEY ("producto_id") REFERENCES "productos" ("id")
+  CONSTRAINT "fk_detalle_venta_venta"
+    FOREIGN KEY ("venta_id") REFERENCES "ventas" ("id") ON DELETE CASCADE,
+  CONSTRAINT "fk_detalle_venta_producto"
+    FOREIGN KEY ("producto_id") REFERENCES "productos" ("id")
 );
 
 CREATE TABLE "comentarios" (
@@ -62,17 +60,21 @@ CREATE TABLE "comentarios" (
   "producto_id" integer,
   "comentario" text,
   "calificacion" integer,
-  "fecha" timestamp,
-  CONSTRAINT "fk_comentarios_cliente" FOREIGN KEY ("cliente_id") REFERENCES "clientes" ("id"),
-  CONSTRAINT "fk_comentarios_producto" FOREIGN KEY ("producto_id") REFERENCES "productos" ("id")
+  "fecha" timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT "fk_comentarios_cliente"
+    FOREIGN KEY ("cliente_id") REFERENCES "clientes" ("id") ON DELETE CASCADE,
+  CONSTRAINT "fk_comentarios_producto"
+    FOREIGN KEY ("producto_id") REFERENCES "productos" ("id") ON DELETE CASCADE
 );
 
 CREATE TABLE "favoritos" (
   "id" SERIAL PRIMARY KEY,
   "cliente_id" integer,
   "producto_id" integer,
-  CONSTRAINT "fk_favoritos_cliente" FOREIGN KEY ("cliente_id") REFERENCES "clientes" ("id"),
-  CONSTRAINT "fk_favoritos_producto" FOREIGN KEY ("producto_id") REFERENCES "productos" ("id")
+  CONSTRAINT "fk_favoritos_cliente"
+    FOREIGN KEY ("cliente_id") REFERENCES "clientes" ("id") ON DELETE CASCADE,
+  CONSTRAINT "fk_favoritos_producto"
+    FOREIGN KEY ("producto_id") REFERENCES "productos" ("id") ON DELETE CASCADE
 );
 
 CREATE TABLE "carros" (
@@ -80,6 +82,8 @@ CREATE TABLE "carros" (
   "cliente_id" integer,
   "producto_id" integer,
   "cantidad" integer,
-  CONSTRAINT "fk_carros_cliente" FOREIGN KEY ("cliente_id") REFERENCES "clientes" ("id"),
-  CONSTRAINT "fk_carros_producto" FOREIGN KEY ("producto_id") REFERENCES "productos" ("id")
+  CONSTRAINT "fk_carros_cliente"
+    FOREIGN KEY ("cliente_id") REFERENCES "clientes" ("id") ON DELETE CASCADE,
+  CONSTRAINT "fk_carros_producto"
+    FOREIGN KEY ("producto_id") REFERENCES "productos" ("id") ON DELETE CASCADE
 );

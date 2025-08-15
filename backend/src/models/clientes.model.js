@@ -3,17 +3,20 @@ import pool from "../../db/config.js";
 import bcrypt from 'bcryptjs'
 
 
-export const createClienteModel = async (nombre, email, contraseña, direccion, telefono) => {
+export const createClienteModel = async (nombre, email, contraseña, direccion, telefono, rol_id = 1) => {
   const hashedPassword = await bcrypt.hash(contraseña, 10);
-  const rol = 1;
+
   const SQLquery = {
-  text: `INSERT INTO clientes (nombre, email, password, direccion, telefono, rol_id, creado_en)
-         VALUES ($1, $2, $3, $4, $5, $6, NOW())
-         RETURNING id, nombre, email, rol_id`,
-  values: [nombre, email, hashedPassword, direccion, telefono, rol],
-  }
-  const response = await pool.query(SQLquery);
-  return response.rows[0];
+    text: `
+      INSERT INTO clientes (nombre, email, password, direccion, telefono, rol_id)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING id, nombre, email, rol_id, creado_en
+    `,
+    values: [nombre, email, hashedPassword, direccion, telefono, rol_id],
+  };
+
+    const response = await pool.query(SQLquery);
+    return response.rows[0];
 };
 
 export const findClienteByEmailModel = async (email) => {
