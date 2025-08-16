@@ -71,7 +71,7 @@ const Cart = () => {
               <div className='card mb-4 mx-auto shadow card-cart' key={p.id}>
                 <div className='row g-0'>
                   <div className='col-md-4'>
-                    <img src={p.img} className='img-fluid rounded-start' alt={p.nombre} />
+                    <img src={p.imagen_url} className='img-fluid rounded-start' alt={p.nombre} />
                   </div>
                   <div className='col-md-8 my-auto'>
                     <div className='card-body p-0'>

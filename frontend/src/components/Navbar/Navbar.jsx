@@ -44,9 +44,9 @@ const StoreNavbar = ({ isTransparent }) => {
                 </>
                 )}
             <NavDropdown title='Categorias' id='navbarScrollingDropdown'>
-              <NavDropdown.Item as={Link} to='/categoria1' disabled>Categoria 1</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to='/categoria2' disabled>Categoria 2</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to='/categoria3' disabled>Categoria 3</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/cajonera' disabled>Cajoneras</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/juguetero' disabled>Jugueteros</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/mueble' disabled>Muebles</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to='/productos'>Todas los productos</NavDropdown.Item>
             </NavDropdown>

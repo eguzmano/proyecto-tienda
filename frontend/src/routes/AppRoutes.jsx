@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
-import { NewProduct, Profile, ProtectedRoutes, PublicRoutes } from '../components'
-import { Home, Login, Register, DetailProduct, Gallery, Cart, Favorites } from '../pages'
+import { Profile, ProtectedRoutes, PublicRoutes } from '../components'
+import { Home, Login, Register, DetailProduct, Gallery, Cart, NewProductPage, Favorites } from '../pages'
 
 const AppRoutes = () => {
   return (
@@ -14,7 +14,7 @@ const AppRoutes = () => {
         <Route element={<ProtectedRoutes />}>
           <Route path='/perfil' element={<Profile />} />
           <Route path='/favoritos' element={<Favorites />} />
-          <Route path='/nuevo' element={<NewProduct />} />
+          <Route path='/nuevo' element={<NewProductPage />} />
         </Route>
         <Route path='/cart' element={<Cart />} />
         <Route path='/productos/:id' element={<DetailProduct />} />

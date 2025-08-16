@@ -19,7 +19,11 @@ export const loginUser = async (req, res) => {
             expiresIn: '1d'
         })
         console.log(token)
-        return res.status(200).json({token})
+        return res.status(200).json({
+            token,
+            nombre: user.nombre,
+            email: user.email
+        })
     } catch (error) {
         res.status(500).json({error: error.message})
     }

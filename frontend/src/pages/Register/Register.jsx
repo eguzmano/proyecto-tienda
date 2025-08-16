@@ -7,9 +7,10 @@ import 'sweetalert2/dist/sweetalert2.min.css'
 
 const Register = () => {
   const [users, setUsers] = useState({
-    name: '',
-    lastname: '',
+    nombre: '',
     email: '',
+    telefono: '',
+    direccion: '',
     password: '',
     repeatPassword: ''
   })
@@ -33,10 +34,10 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const { name, lastname, email, password, repeatPassword } = users
+    const { nombre, email, telefono, direccion, password, repeatPassword } = users
 
     // Validaciones
-    if (!name.trim() || !lastname.trim() || !email.trim() || !password.trim() || !repeatPassword.trim()) {
+    if (!nombre.trim() || !email.trim() || !telefono.trim() || !direccion.trim() || !password.trim() || !repeatPassword.trim()) {
       Swal.fire({
         ...swalOptions,
         icon: 'warning',
@@ -62,13 +63,13 @@ const Register = () => {
     }
 
     try {
-      await register({ name, lastname, email, password })
+      await register({ nombre, email, telefono, direccion, password })
       Swal.fire({
         ...swalOptions,
         icon: 'success',
         title: '✅ Usuario creado correctamente!'
       })
-      setUsers({ name: '', lastname: '', email: '', password: '', repeatPassword: '' })
+      setUsers({ nombre: '', email: '', telefono: '', direccion: '', password: '', repeatPassword: '' })
       navigate('/')
     } catch (error) {
       const errorMsg = error.response?.data?.message || '❌ Error al registrar usuario'
@@ -88,22 +89,11 @@ const Register = () => {
           <input
             type='text'
             className='form-control'
-            id='name'
-            name='name'
-            value={users.name}
+            id='nombre'
+            name='nombre'
+            value={users.nombre}
             onChange={handleChange}
             placeholder='Nombre'
-          />
-        </div>
-        <div className='mb-3'>
-          <input
-            type='text'
-            className='form-control'
-            id='lastname'
-            name='lastname'
-            value={users.lastname}
-            onChange={handleChange}
-            placeholder='Apellido'
           />
         </div>
         <div className='mb-3'>
@@ -115,6 +105,28 @@ const Register = () => {
             value={users.email}
             onChange={handleChange}
             placeholder='Email'
+          />
+        </div>
+        <div className='mb-3'>
+          <input
+            type='text'
+            className='form-control'
+            id='telefono'
+            name='telefono'
+            value={users.telefono}
+            onChange={handleChange}
+            placeholder='Telefono'
+          />
+        </div>
+        <div className='mb-3'>
+          <input
+            type='text'
+            className='form-control'
+            id='direccion'
+            name='direccion'
+            value={users.direccion}
+            onChange={handleChange}
+            placeholder='Direccion'
           />
         </div>
         <div className='mb-3'>

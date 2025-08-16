@@ -1,8 +1,17 @@
 import { useState } from 'react'
 import { Form, Button } from 'react-bootstrap'
+import axios from 'axios'
+import Swal from 'sweetalert2'
 import './NewProduct.css'
 
-const NewProduct = ({ onSubmit }) => {
+const categoryMap = {
+  Cajonera: 1,
+  Juguetero: 2,
+  Mueble: 3,
+  Librero: 4
+}
+
+const NewProduct = () => {
   const [product, setProduct] = useState({
     name: '',
     description: '',
@@ -17,17 +26,36 @@ const NewProduct = ({ onSubmit }) => {
     setProduct({ ...product, [name]: value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    onSubmit(product)
-    setProduct({
-      name: '',
-      description: '',
-      price: '',
-      stock: '',
-      category: '',
-      imageUrl: ''
-    })
+    // Validación simple
+    if (!product.name || !product.description || !product.price || !product.stock || !product.category || !product.imageUrl) {
+      Swal.fire('Todos los campos son obligatorios', '', 'warning')
+      return
+    }
+
+    try {
+      const payload = {
+        nombre: product.name,
+        descripcion: product.description,
+        precio: product.price,
+        stock: product.stock,
+        imagen_url: product.imageUrl,
+        categoria_id: categoryMap[product.category] || 5 // default a 'otro'
+      }
+      await axios.post('http://localhost:5000/api/productos', payload)
+      Swal.fire('¡Producto creado!', '', 'success')
+      setProduct({
+        name: '',
+        description: '',
+        price: '',
+        stock: '',
+        category: '',
+        imageUrl: ''
+      })
+    } catch (error) {
+      Swal.fire('Error al crear producto', error?.response?.data?.error || '', 'error')
+    }
   }
 
   return (
@@ -94,11 +122,11 @@ const NewProduct = ({ onSubmit }) => {
           required
         >
           <option value=''>Seleccione una categoría</option>
-          <option value='estanteria'>Estantería</option>
-          <option value='cama'>Cama</option>
-          <option value='mesa'>Mesa</option>
-          <option value='silla'>Silla</option>
-          <option value='otro'>Otro</option>
+          <option value='Cajonera'>Cajonera</option>
+          <option value='Juguetero'>Juguetero</option>
+          <option value='Mueble'>Mueble</option>
+          <option value='Librero'>Librero</option>
+          <option value='Repisa'>Repisa</option>
         </Form.Select>
       </Form.Group>
 

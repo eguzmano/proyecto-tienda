@@ -1,4 +1,4 @@
-import { createContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useEffect, useMemo, useState, useCallback } from 'react'
 
 export const ProductContext = createContext()
 
@@ -6,7 +6,7 @@ const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState([])
   const [product, setProduct] = useState(null)
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       const res = await fetch('http://localhost:5000/api/productos')
       const data = await res.json()
@@ -14,22 +14,22 @@ const ProductProvider = ({ children }) => {
     } catch (error) {
       console.log('Error fetching products:', error)
     }
-  }
+  }, [])
 
-  const fetchProduct = async (id) => {
+  const fetchProduct = useCallback(async (id) => {
     try {
       const res = await fetch(`http://localhost:5000/api/productos/${id}`)
       const data = await res.json()
-      setProduct(data)
+      setProduct(data.producto)
     } catch (error) {
       console.log('Error fetching product:', error)
       setProduct(null)
     }
-  }
+  }, [])
 
   useEffect(() => {
     fetchProducts()
-  }, [])
+  }, [fetchProducts])
 
   const clearProduct = () => setProduct(null)
 
