@@ -1,18 +1,29 @@
-import { getCarroModel, addItemCarroModel, deleteItemCarroModel } from "../models/carro.model.js";
+import { getCarroModel, addItemCarroModel, deleteItemCarroModel, patchCarroItem } from "../models/carro.model.js";
 
 export const getCarroController = async (req, res) => {
   try {
-    const { clienteId } = req.params;              // <-- ojo con el nombre del param
-    const idNum = Number(clienteId);
-    if (!Number.isInteger(idNum) || idNum <= 0) {
-      return res.status(400).json({ message: "clienteId inválido" });
-    }
+    const clienteId = parseInt(req.params.clienteId);
+    const items = await getCarroModel(clienteId);
+    res.json(items);
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+};
 
-    const items = await getCarroModel(idNum);
-    return res.json(items);
-  } catch (error) {
-    console.error("[GET /carro] error:", error);   // <-- LOG al server
-    return res.status(500).json({ message: "Error al obtener el carro", detail: error.message });
+export const patchCarroItemController = async (req, res) => {
+  try {
+    const clienteId  = parseInt(req.params.clienteId);
+    const productoId = parseInt(req.params.productoId);
+    const delta      = parseInt(req.body?.delta) || 1; // +1 por defecto
+
+    const item = await patchCarroItem(clienteId, productoId, delta);
+
+    // si volvió null, puede ser que se eliminó (cantidad <=0) o no existía y delta <= 0
+    if (item === null) return res.json({ message: "Item eliminado o no existía" });
+
+    res.json(item);
+  } catch (e) {
+    res.status(400).json({ message: e.message });
   }
 };
 

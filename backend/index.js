@@ -10,6 +10,7 @@ import categoriaRoute from "./routes/categoria.route.js"
 import productoRoute from "./routes/producto.route.js";
 import cometarioRoute from "./routes/comentario.route.js";
 import carroRoute from "./routes/carro.route.js"
+import favoritoRoute from "./routes/favorito.route.js"
 
 const app = express();
 
@@ -27,6 +28,9 @@ app.use("/api/categorias", categoriaRoute)
 
 //carro
 app.use("/api", carroRoute)
+
+//favoritos
+app.use("/api", favoritoRoute)
 
 app.use("/api/productos", productoRoute); 
 app.use("/api/comentarios", cometarioRoute);
