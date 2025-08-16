@@ -1,4 +1,4 @@
-import { getCategoriasModel, getCategoriaModel } from "../models/categoria.models.js";
+import { getCategoriasModel, getCategoriaModel } from "../models/categoria.model.js";
 
 export const readCategorias = async (req, res) => {
   try {

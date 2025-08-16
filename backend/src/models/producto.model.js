@@ -42,7 +42,6 @@ export const deleteProductoModel = async (id) => {
     text: 'DELETE FROM PRODUCTOS WHERE id = $1',
     values: [id]
   }
-  
   const result = await pool.query(SQLquery)
   return result.rowCount
 }
