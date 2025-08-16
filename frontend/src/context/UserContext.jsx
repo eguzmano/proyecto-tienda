@@ -47,11 +47,11 @@ const UserProvider = ({ children }) => {
       if (data?.token) {
         setToken(data.token)
         localStorage.setItem('token', data.token)
-        setUser({ email: data.email })
+        setUser({ email: data.email, nombre: data.nombre }) // Guarda el nombre
         Swal.fire({
           ...swalOptions,
           icon: 'success',
-          title: `✅ Bienvenido ${data.email}`
+          title: `✅ Bienvenido ${data.nombre || data.email}` // Muestra el nombre si existe
         })
         navigate('/perfil')
       }

@@ -30,22 +30,23 @@ export const registerCliente = async (req, res) => {
   }
 }
 export const getClienteProfile = async (req, res) => {
-    try {
-        const email = req.user
-        const user = await findClienteByEmailModel(email)
-        if(!user){
-            return res.status(404).json({ message: 'Usuario no encontrado'})
-        }
-        res.status(200).json([
-            {
-            email: user.email,
-            rol: user.rol,
-            lenguage: user.lenguage
-            }
-        ])
-    } catch (error) {
-         res.status(500).json({ error: error.message })
+  try {
+    const email = req.user
+    const user = await findClienteByEmailModel(email)
+    if (!user) {
+      return res.status(404).json({ message: 'Usuario no encontrado' })
     }
+    res.status(200).json({
+      id: user.id,
+      nombre: user.nombre,
+      email: user.email,
+      rol_id: user.rol_id,
+      direccion: user.direccion,
+      telefono: user.telefono
+    })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
 }
 
 export const registerAdmin = async (req, res) => {
