@@ -26,7 +26,7 @@
 }
 
 .detail-icon-btn.favorite {
-  color: #bbb;
+  color: #bb2222;
   font-size: 2.3rem;
   position: absolute;
   top: 15px;
@@ -45,4 +45,25 @@
 
 .detail-icon-btn.favorite.fav:hover {
   color: #b30000;
+}
+
+.detail-icon-btn.edit {
+  color: #5E4631;
+  font-size: 2.3rem;      /* Igual que los otros iconos */
+  position: absolute;
+  top: 15px;              /* Alineado con el de eliminar */
+  left: 55px;             /* Separado a la derecha del icono eliminar */
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-icon-btn.edit:hover {
+  color: #bfa16c;
+  opacity: 0.8;
+}
+
+.detail-icon-btn.edit i {
+  font-size: 2.3rem;      /* Asegura tamaño igual al resto */
 }
