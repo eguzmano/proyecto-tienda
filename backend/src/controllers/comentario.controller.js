@@ -1,4 +1,4 @@
-import { getComentariosModel, getComentarioModel, createComentarioModel } from "../../src/models/comentarios.model.js";
+import { getComentariosModel, createComentarioModel, getComentariosPorProductoModel } from "../../src/models/comentarios.model.js";
 
 export const readComentarios = async (req, res) => {
   try {
@@ -9,21 +9,22 @@ export const readComentarios = async (req, res) => {
   }
 };
 
-export const readComentario = async (req, res) => {
+export const getComentariosDeProducto = async (req, res) => {
   try {
-    const { id } = req.params
-    if (!id) {
-      return res.status(400).json({ error: 'Comentario ID es requerido' })
+    const { id } = req.params;
+    const idNum = Number(id);
+    if (!Number.isInteger(idNum) || idNum <= 0) {
+      return res.status(400).json({ message: "productoId inválido" });
     }
-    const comentario = await getComentarioModel(id)
-    res
-      .status(!comentario ? 404 : 200)
-      .json(!comentario ? { error: 'Comentario no encontrada' } : { comentario })
 
+    const comentarios = await getComentariosPorProductoModel(idNum);
+    res.json(comentarios);
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error(error);
+    res.status(500).json({ message: "Error al obtener comentarios" });
   }
 };
+
 export const createComentario = async (req, res) => {
   try {
     const { 

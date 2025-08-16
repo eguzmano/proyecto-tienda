@@ -7,13 +7,13 @@ export const getComentariosModel = async () => {
   return response.rows
 };
 
-export const getComentarioModel = async (id) => {
-  const sqlQuery = {
-    text: 'SELECT * FROM COMENTARIOS WHERE id=$1',
-    values: [id]
-  }
-  const response = await pool.query(sqlQuery)
-  return response.rows[0]
+export const getComentariosPorProductoModel = async (productoId) => {
+  const sql = {
+    text: "SELECT * FROM comentarios WHERE producto_id = $1 ORDER BY fecha DESC, id DESC",
+    values: [productoId]
+  };
+  const response = await pool.query(sql);
+  return response.rows; 
 };
 
 export const createComentarioModel = async (cliente_id, producto_id, comentario, calificacion, fecha) => {

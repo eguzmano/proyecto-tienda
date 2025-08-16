@@ -9,7 +9,7 @@ import categoriaRoute from "./routes/categoria.route.js"
 
 import productoRoute from "./routes/producto.route.js";
 import cometarioRoute from "./routes/comentario.route.js";
-
+import carroRoute from "./routes/carro.route.js"
 
 const app = express();
 
@@ -24,6 +24,9 @@ app.use("/api/user", usuariosRouter);
 
 //Categorias
 app.use("/api/categorias", categoriaRoute)
+
+//carro
+app.use("/api", carroRoute)
 
 app.use("/api/productos", productoRoute); 
 app.use("/api/comentarios", cometarioRoute);
