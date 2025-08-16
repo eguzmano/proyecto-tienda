@@ -65,6 +65,15 @@ const DetailProduct = () => {
       >
         <i className='bi bi-x-lg' />
       </button>
+      {/* Botón editar (lápiz) */}
+      <button
+        className='detail-icon-btn edit'
+        onClick={() => navigate(`/productos/editar/${id}`)}
+        aria-label='Editar producto'
+        style={{ position: 'absolute', top: 55, left: 15, color: '#5E4631', fontSize: '1.5rem', zIndex: 2 }}
+      >
+        <i className='bi bi-pencil-square' />
+      </button>
       {/* Botón favoritos */}
       <button
         className={`detail-icon-btn favorite${fav ? ' fav' : ''}`}

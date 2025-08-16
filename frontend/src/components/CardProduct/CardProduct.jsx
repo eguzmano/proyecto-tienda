@@ -61,6 +61,15 @@ const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
       >
         <i className={fav ? 'bi bi-heart-fill' : 'bi bi-heart'} />
       </button>
+      {/* Botón editar */}
+      <button
+        className='card-icon-btn edit'
+        onClick={() => navigate(`/productos/editar/${id}`)}
+        aria-label='Editar producto'
+        style={{ position: 'absolute', top: 50, left: 10, color: '#5E4631', fontSize: '1.5rem', zIndex: 2 }}
+      >
+        <i className='bi bi-pencil-square' />
+      </button>
       <img src={imagen_url} className='card-img-top' alt={nombre} />
       <div className='card-body d-flex flex-column'>
         <ul className='list-group list-group-flush'>
