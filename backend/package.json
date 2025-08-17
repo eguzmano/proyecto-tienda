@@ -1,28 +1,38 @@
 {
   "name": "simple-api-jwt",
-  "type": "module",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "type": "module",
+  "main": "server.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:coverage": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --coverage --runInBand"
   },
-  "keywords": [],
-  "author": "bluuweb",
-  "license": "ISC",
   "dependencies": {
-    "@faker-js/faker": "^9.9.0",
-    "bcryptjs": "^3.0.2",
+    "express": "^4.21.2",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
-    "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
-    "nanoid": "^5.0.6",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "@faker-js/faker": "^9.9.0",
+    "bcryptjs": "^3.0.2",
+    "nanoid": "^5.0.6"
   },
   "devDependencies": {
+    "jest": "^30.0.5",
+    "supertest": "^7.1.4",
     "nodemon": "^3.1.0",
-    "supertest": "^7.1.4"
+    "cross-env": "^7.0.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "collectCoverageFrom": [
+      "**/*.js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }
