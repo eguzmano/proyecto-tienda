@@ -21,8 +21,10 @@ export const loginUser = async (req, res) => {
         console.log(token)
         return res.status(200).json({
             token,
+            id: user.id,         // <--- agrega esto
             nombre: user.nombre,
-            email: user.email
+            email: user.email,
+            rol_id: user.rol_id
         })
     } catch (error) {
         res.status(500).json({error: error.message})

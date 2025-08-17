@@ -1,16 +1,19 @@
 import CartProvider from './CartContext'
 import ProductProvider from './ProductsContext'
 import UserProvider from './UserContext'
+import FavoritesProvider from './FavoritesContext'
 
 const AppProvider = ({ children }) => {
   return (
-    <CartProvider>
-      <UserProvider>
+    <UserProvider>
+      <FavoritesProvider>
         <ProductProvider>
-          {children}
+          <CartProvider>
+            {children}
+          </CartProvider>
         </ProductProvider>
-      </UserProvider>
-    </CartProvider>
+      </FavoritesProvider>
+    </UserProvider>
   )
 }
 

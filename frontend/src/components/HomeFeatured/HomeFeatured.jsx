@@ -4,15 +4,16 @@ import './HomeFeatured.css'
 import { useNavigate } from 'react-router-dom'
 import { CartContext } from '../../context/CartContext'
 import formatNumber from '../../utils/formatNumber'
+import capitalize from '../../utils/capitalize'
 
-const FEATURED_IDS = ['2', '3']
+const FEATURED_IDS = [4, 5]
 
 const HomeFeatured = () => {
   const { products } = useContext(ProductContext)
   const { addToCart } = useContext(CartContext)
   const navigate = useNavigate()
 
-  const destacados = products.filter(prod => FEATURED_IDS.includes(prod.id))
+  const destacados = products.filter(prod => FEATURED_IDS.includes(Number(prod.id)))
 
   return (
     <>
@@ -24,11 +25,11 @@ const HomeFeatured = () => {
               ? (
                 <>
                   <div className='col-md-4'>
-                    <img src={producto.img} className='img-fluid rounded' alt={producto.nombre} />
+                    <img src={producto.imagen_url} className='img-fluid rounded' alt={producto.nombre} />
                   </div>
                   <div className='col-md-8'>
                     <div className='card-body-featured'>
-                      <h3 className='card-title'>{producto.nombre}</h3>
+                      <h3 className='card-title'>{capitalize(producto.nombre)}</h3>
                       <p className='card-text'>{producto.descripcion}</p>
                       <p className='card-text precio'>Precio: ${formatNumber(producto.precio)}</p>
                       <div className='featured-buttons'>
@@ -53,7 +54,7 @@ const HomeFeatured = () => {
                 <>
                   <div className='col-md-8'>
                     <div className='card-body-featured'>
-                      <h3 className='card-title'>{producto.nombre}</h3>
+                      <h3 className='card-title'>{capitalize(producto.nombre)}</h3>
                       <p className='card-text'>{producto.descripcion}</p>
                       <p className='card-text precio'>Precio: ${formatNumber(producto.precio)}</p>
                       <div className='featured-buttons'>
@@ -73,7 +74,7 @@ const HomeFeatured = () => {
                     </div>
                   </div>
                   <div className='col-md-4'>
-                    <img src={producto.img} className='img-fluid rounded' alt={producto.nombre} />
+                    <img src={producto.imagen_url} className='img-fluid rounded' alt={producto.nombre} />
                   </div>
                 </>
                 )}

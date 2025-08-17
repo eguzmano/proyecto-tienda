@@ -32,12 +32,16 @@ const ProductProvider = ({ children }) => {
   }, [fetchProducts])
 
   const clearProduct = () => setProduct(null)
+  const removeProduct = (id) => {
+    setProducts(products => products.filter(p => Number(p.id) !== Number(id)))
+  }
 
   const globalState = useMemo(() => ({
     products,
     product,
     fetchProduct,
-    clearProduct
+    clearProduct,
+    removeProduct
   }), [products, product])
 
   return (

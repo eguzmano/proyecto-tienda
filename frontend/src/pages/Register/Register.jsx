@@ -14,7 +14,8 @@ const Register = () => {
     password: '',
     repeatPassword: ''
   })
-  const { register } = useContext(UserContext)
+  const [isAdmin, setIsAdmin] = useState(false) // Nuevo estado
+  const { registerCliente, registerAdmin } = useContext(UserContext)
   const navigate = useNavigate()
 
   const handleChange = (e) => {
@@ -63,13 +64,18 @@ const Register = () => {
     }
 
     try {
-      await register({ nombre, email, telefono, direccion, password })
+      if (isAdmin) {
+        await registerAdmin({ nombre, email, telefono, direccion, password })
+      } else {
+        await registerCliente({ nombre, email, telefono, direccion, password })
+      }
       Swal.fire({
         ...swalOptions,
         icon: 'success',
         title: '✅ Usuario creado correctamente!'
       })
       setUsers({ nombre: '', email: '', telefono: '', direccion: '', password: '', repeatPassword: '' })
+      setIsAdmin(false)
       navigate('/')
     } catch (error) {
       const errorMsg = error.response?.data?.message || '❌ Error al registrar usuario'
@@ -150,6 +156,17 @@ const Register = () => {
             onChange={handleChange}
             placeholder='Repite tu Contraseña'
           />
+        </div>
+        <div className='mb-3'>
+          <label>
+            <input
+              type='checkbox'
+              checked={isAdmin}
+              onChange={e => setIsAdmin(e.target.checked)}
+              style={{ marginRight: '8px' }}
+            />
+            Registrar como administrador
+          </label>
         </div>
         <button type='submit' className='btn btn-dark'>
           Crear Cuenta

@@ -24,9 +24,9 @@ export const addFavoritosClienteModel = async (cliente_id, producto_id) => {
 
 export const deleteFavoritoModel = async (id) => {
   const SQLquery = {
-    text: 'DELETE FROM favoritos WHERE id = $1',
+    text: 'DELETE FROM favoritos WHERE id = $1 RETURNING id, cliente_id, producto_id',
     values: [id]
   }
   const response = await pool.query(SQLquery)
-  return response.rows; 
+  return response.rows[0] || null
 }

@@ -1,4 +1,5 @@
-import { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { ProductContext } from '../../context/ProductsContext'
 import { CardProduct } from '../../components'
 import './Gallery.css'
@@ -12,8 +13,20 @@ const categorias = [
 ]
 
 const Gallery = () => {
-  const { products } = useContext(ProductContext)
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null)
+  const { products, removeProduct } = useContext(ProductContext)
+  const location = useLocation()
+  const params = new URLSearchParams(location.search)
+  const categoriaParam = params.get('categoria')
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(
+    categoriaParam ? Number(categoriaParam) : null
+  )
+
+  // Sincroniza el filtro con la URL cada vez que cambia
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const categoriaParam = params.get('categoria')
+    setCategoriaSeleccionada(categoriaParam ? Number(categoriaParam) : null)
+  }, [location.search])
 
   // Para cada categoría, busca la imagen de un producto de esa categoría
   const categoriasConImagen = categorias.map(cat => {
@@ -65,6 +78,7 @@ const Gallery = () => {
                   nombre={nombre}
                   imagen_url={imagen_url}
                   precio={precio}
+                  onDelete={removeProduct} // <-- para eliminar del estado al instante
                 />
               ))
             )

@@ -30,7 +30,7 @@ export const deleteFavoritoController = async (req, res) => {
             return res.status(404).json({ error: 'Favorito no encontrado' });
         }
         // Éxito: sin contenido
-        return res.status(204)
+        return res.status(200).json({ favorito: favorito })
     } catch (error) {
         res.status(500).json({ error: 'Error al procesar la solicitud' })
         console.error('Error =>', error)

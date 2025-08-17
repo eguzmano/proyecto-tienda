@@ -25,11 +25,21 @@ const UserProvider = ({ children }) => {
   const authResponse = (data, redirectPath = '/perfil') => {
     if (data?.token) {
       setToken(data.token)
-      setUser({ email: data.email })
+      // Usa el objeto user completo si existe
+      if (data.user) {
+        setUser(data.user)
+      } else {
+        setUser({
+          id: data.id,
+          email: data.email,
+          nombre: data.nombre,
+          rol_id: data.rol_id
+        })
+      }
       Swal.fire({
         ...swalOptions,
         icon: 'success',
-        title: `✅ Bienvenido ${data.email}`
+        title: `✅ Bienvenido ${data.nombre || data.email}`
       })
       navigate(redirectPath)
     } else {
@@ -47,7 +57,12 @@ const UserProvider = ({ children }) => {
       if (data?.token) {
         setToken(data.token)
         localStorage.setItem('token', data.token)
-        setUser({ email: data.email, nombre: data.nombre }) // Guarda el nombre
+        setUser({
+          id: data.id, // <--- agrega esto
+          email: data.email,
+          nombre: data.nombre,
+          rol_id: data.rol_id // <--- agrega esto si lo usas
+        })
         Swal.fire({
           ...swalOptions,
           icon: 'success',
@@ -64,7 +79,7 @@ const UserProvider = ({ children }) => {
     }
   }
 
-  const register = async (userData) => {
+  const registerCliente = async (userData) => {
     try {
       const { data } = await axios.post('http://localhost:5000/api/auth/register', userData)
       authResponse(data, '/')
@@ -73,6 +88,18 @@ const UserProvider = ({ children }) => {
         ...swalOptions,
         icon: 'error',
         title: `❌ ${error?.response?.data?.message || 'Error al registrar usuario'}`
+      })
+    }
+  }
+  const registerAdmin = async (userData) => {
+    try {
+      const { data } = await axios.post('http://localhost:5000/api/auth/register/admin', userData)
+      authResponse(data, '/')
+    } catch (error) {
+      Swal.fire({
+        ...swalOptions,
+        icon: 'error',
+        title: `❌ ${error?.response?.data?.message || 'Error al registrar Administrador'}`
       })
     }
   }
@@ -104,12 +131,19 @@ const UserProvider = ({ children }) => {
     }
   }, [token])
 
+  useEffect(() => {
+    if (token && !user) {
+      getProfile()
+    }
+  }, [token])
+
   const globalState = useMemo(() => ({
     token,
     user,
     login,
     logout,
-    register,
+    registerCliente,
+    registerAdmin,
     getProfile
   }), [token, user])
 

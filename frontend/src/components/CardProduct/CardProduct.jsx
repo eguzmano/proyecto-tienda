@@ -3,6 +3,7 @@ import formatNumber from '../../utils/formatNumber'
 import capitalize from '../../utils/capitalize'
 import { useContext, useState } from 'react'
 import { CartContext } from '../../context/CartContext'
+import { FavoritesContext } from '../../context/FavoritesContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Swal from 'sweetalert2'
@@ -10,16 +11,28 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 
 const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
   const { addToCart } = useContext(CartContext)
+  const { addFavorite, removeFavorite, favorites } = useContext(FavoritesContext)
   const navigate = useNavigate()
-  const [fav, setFav] = useState(false)
+  const [loadingFav, setLoadingFav] = useState(false)
+  const isFav = favorites.some(f => Number(f.producto_id) === Number(id))
 
   const handleFavorite = async () => {
+    if (loadingFav) return
+    setLoadingFav(true)
     try {
-      await axios.post('http://localhost:5000/api/favoritos', { producto_id: id })
-      setFav(true)
-      Swal.fire('Agregado a favoritos', '', 'success')
+      if (isFav) {
+        const ok = await removeFavorite(id)
+        if (ok) {
+          Swal.fire('Eliminado de favoritos', '', 'success')
+        }
+      } else {
+        await addFavorite(id)
+        Swal.fire('Agregado a favoritos', '', 'success')
+      }
     } catch (error) {
-      Swal.fire('Error al agregar a favoritos', '', 'error')
+      Swal.fire('Error al actualizar favoritos', '', 'error')
+    } finally {
+      setLoadingFav(false)
     }
   }
 
@@ -55,11 +68,12 @@ const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
       </button>
       {/* Botón favoritos */}
       <button
-        className={`card-icon-btn favorite${fav ? ' fav' : ''}`}
+        className={`card-icon-btn favorite${isFav ? ' fav' : ''}`}
         onClick={handleFavorite}
         aria-label='Agregar a favoritos'
+        disabled={loadingFav}
       >
-        <i className={fav ? 'bi bi-heart-fill' : 'bi bi-heart'} />
+        <i className={isFav ? 'bi bi-heart-fill' : 'bi bi-heart'} />
       </button>
       {/* Botón editar */}
       <button
@@ -74,7 +88,7 @@ const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
       <div className='card-body d-flex flex-column'>
         <ul className='list-group list-group-flush'>
           <li className='list-group-item fs-4'>{capitalize(nombre)}</li>
-          <li className='list-group-item'>Precio: ${formatNumber(precio)}</li>
+          <li className='list-group-item'>Precio: ${formatNumber(Number(precio))}</li>
         </ul>
         <div className='buttons'>
           <button className='btn btn-light me-3' onClick={() => navigate(`/productos/${id}`)}>Ver mas 👀</button>

@@ -6,7 +6,7 @@ const router = Router()
 
 router.get('/favoritos/:cliente_id', getFavoritosClienteController)
 router.post('/favoritos', createFavoritoController)
-router.delete('/favoritos', deleteFavoritoController)
+router.delete('/favoritos/:id', deleteFavoritoController)
 
 
 export default router
