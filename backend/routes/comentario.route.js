@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { comentarioController } from "../controllers/comentario.controller.js";
+import { readComentarios, getComentariosDeProducto, createComentario } from "../src/controllers/comentario.controller.js";
 
 const router = Router();
 
-router.get("/", comentarioController.readComentarios);
-router.get("/:id", comentarioController.readComentario);
+router.get("/", readComentarios);
+router.get("/:id", getComentariosDeProducto);
+router.post("/", createComentario)
 
 export default router;

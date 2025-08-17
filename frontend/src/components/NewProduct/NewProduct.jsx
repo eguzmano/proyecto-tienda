@@ -1,8 +1,17 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Form, Button } from 'react-bootstrap'
+import Swal from 'sweetalert2'
+import { useNavigate } from 'react-router-dom'
 import './NewProduct.css'
 
-const NewProduct = ({ onSubmit }) => {
+const categoryMap = {
+  Cajonera: 1,
+  Juguetero: 2,
+  Mueble: 3,
+  Librero: 4
+}
+
+const NewProduct = ({ initialProduct, onSubmit, editMode }) => {
   const [product, setProduct] = useState({
     name: '',
     description: '',
@@ -12,27 +21,51 @@ const NewProduct = ({ onSubmit }) => {
     imageUrl: ''
   })
 
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if (initialProduct) {
+      setProduct({
+        name: initialProduct.nombre || '',
+        description: initialProduct.descripcion || '',
+        price: initialProduct.precio || '',
+        stock: initialProduct.stock || '',
+        category: Object.keys(categoryMap).find(
+          key => categoryMap[key] === initialProduct.categoria_id
+        ) || '',
+        imageUrl: initialProduct.imagen_url || ''
+      })
+    }
+  }, [initialProduct])
+
   const handleChange = (e) => {
     const { name, value } = e.target
     setProduct({ ...product, [name]: value })
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    onSubmit(product)
-    setProduct({
-      name: '',
-      description: '',
-      price: '',
-      stock: '',
-      category: '',
-      imageUrl: ''
-    })
+    if (!product.name || !product.description || !product.price || !product.stock || !product.category || !product.imageUrl) {
+      Swal.fire('Todos los campos son obligatorios', '', 'warning')
+      return
+    }
+    const payload = {
+      nombre: product.name,
+      descripcion: product.description,
+      precio: product.price,
+      stock: product.stock,
+      imagen_url: product.imageUrl,
+      categoria_id: categoryMap[product.category] || 5
+    }
+    if (editMode && initialProduct?.id) {
+      payload.id = initialProduct.id
+    }
+    await onSubmit(payload)
   }
 
   return (
     <Form className='product-form-container p-4 border rounded bg-light' onSubmit={handleSubmit}>
-      <h4 className='mb-4'>Nuevo Producto</h4>
+      <h4 className='mb-4'>{editMode ? 'Editar Producto' : 'Nuevo Producto'}</h4>
 
       <Form.Group className='mb-3'>
         <Form.Label>Nombre</Form.Label>
@@ -94,11 +127,10 @@ const NewProduct = ({ onSubmit }) => {
           required
         >
           <option value=''>Seleccione una categoría</option>
-          <option value='estanteria'>Estantería</option>
-          <option value='cama'>Cama</option>
-          <option value='mesa'>Mesa</option>
-          <option value='silla'>Silla</option>
-          <option value='otro'>Otro</option>
+          <option value='Cajonera'>Cajonera</option>
+          <option value='Juguetero'>Juguetero</option>
+          <option value='Mueble'>Mueble</option>
+          <option value='Librero'>Librero</option>
         </Form.Select>
       </Form.Group>
 
@@ -115,7 +147,16 @@ const NewProduct = ({ onSubmit }) => {
       </Form.Group>
 
       <Button variant='primary' type='submit' className='w-100'>
-        Crear Producto
+        {editMode ? 'Actualizar Producto' : 'Crear Producto'}
+      </Button>
+
+      <Button
+        variant='secondary'
+        type='button'
+        className='w-100 mt-2'
+        onClick={() => navigate(-1)}
+      >
+        Cancelar
       </Button>
     </Form>
   )

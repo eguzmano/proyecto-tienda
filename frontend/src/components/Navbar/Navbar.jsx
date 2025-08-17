@@ -15,10 +15,11 @@ import { UserContext } from '../../context/UserContext'
 
 const StoreNavbar = ({ isTransparent }) => {
   const { total } = useContext(CartContext)
-  const { token, logout } = useContext(UserContext)
+  const { token, logout, user } = useContext(UserContext)
 
   return (
     <Navbar expand='lg' className={`navbar ${isTransparent ? 'navbar-transparent' : ''}`}>
+      {/* TODO: implementar */}
       <Container fluid className='mx-5'>
         <Navbar.Brand as={Link} to='/'><Image className='navbar-logo' src={logo} fluid /></Navbar.Brand>
         <Navbar.Toggle aria-controls='navbarScroll' />
@@ -34,7 +35,9 @@ const StoreNavbar = ({ isTransparent }) => {
                 <>
                   <Nav.Link as={Link} to='/perfil'>Perfil</Nav.Link>
                   <Nav.Link as={Link} to='/favoritos'>Favoritos</Nav.Link>
-                  <Nav.Link as={Link} to='/nuevo'>Nuevo Producto</Nav.Link>
+                  {token && user?.rol_id === 2 && (
+                    <Nav.Link as={Link} to='/nuevo'>Nuevo Producto</Nav.Link>
+                  )}
                 </>
                 )
               : (
@@ -43,15 +46,15 @@ const StoreNavbar = ({ isTransparent }) => {
                   <Nav.Link as={Link} to='/ingresar'>Ingresar</Nav.Link>
                 </>
                 )}
-            <NavDropdown title='Categorias' id='navbarScrollingDropdown'>
-              <NavDropdown.Item as={Link} to='/categoria1' disabled>Categoria 1</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to='/categoria2' disabled>Categoria 2</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to='/categoria3' disabled>Categoria 3</NavDropdown.Item>
+            <NavDropdown title='Productos' id='navbarScrollingDropdown'>
+              <NavDropdown.Item as={Link} to='/productos?categoria=1'>Cajoneras</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/productos?categoria=2'>Jugueteros</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/productos?categoria=3'>Muebles</NavDropdown.Item>
+              <NavDropdown.Item as={Link} to='/productos?categoria=4'>Libreros</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to='/productos'>Todas los productos</NavDropdown.Item>
             </NavDropdown>
           </Nav>
-          {/* Nuevo contenedor alineado a la derecha */}
           <div className='d-flex align-items-center ms-auto gap-2'>
             {token && (
               <Button className='btn-logout mx-2 text-nowrap' variant='outline-danger' onClick={logout}>

@@ -23,6 +23,7 @@ const HomeCategory = () => {
         </Carousel.Item>
         <Carousel.Item>
           <img className='img-carousel' src={repisas} alt='Repisas' />
+          {/* TODO: cambiarla categoria */}
           <Carousel.Caption>
             <h3>Repisas</h3>
           </Carousel.Caption>

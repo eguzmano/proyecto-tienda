@@ -1,0 +1,69 @@
+/* Elimina el círculo y fondo de los botones de iconos */
+.detail-icon-btn {
+  border: none;
+  background: none;
+  box-shadow: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  transition: color 0.2s;
+  line-height: 1;
+}
+
+.detail-icon-btn:active,
+.detail-icon-btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.detail-icon-btn.delete {
+  color: #bb2222;
+  font-size: 2.3rem;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  z-index: 2;
+}
+
+.detail-icon-btn.favorite {
+  color: #bb2222;
+  font-size: 2.3rem;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 2;
+}
+
+.detail-icon-btn.favorite.fav {
+  color: red;
+}
+
+.detail-icon-btn:hover {
+  opacity: 0.8;
+  color: #222;
+}
+
+.detail-icon-btn.favorite.fav:hover {
+  color: #b30000;
+}
+
+.detail-icon-btn.edit {
+  color: #5E4631;
+  font-size: 2.3rem;      /* Igual que los otros iconos */
+  position: absolute;
+  top: 15px;              /* Alineado con el de eliminar */
+  left: 55px;             /* Separado a la derecha del icono eliminar */
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-icon-btn.edit:hover {
+  color: #bfa16c;
+  opacity: 0.8;
+}
+
+.detail-icon-btn.edit i {
+  font-size: 2.3rem;      /* Asegura tamaño igual al resto */
+}

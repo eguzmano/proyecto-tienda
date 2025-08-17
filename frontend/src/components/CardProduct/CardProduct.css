@@ -16,3 +16,75 @@
   background-color: #5E4631;
 }
 
+/* Elimina el círculo y fondo de los botones de iconos en CardProduct */
+.card-icon-btn {
+  border: none;
+  background: none;
+  box-shadow: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  transition: color 0.2s;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.card-icon-btn:active,
+.card-icon-btn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.card-icon-btn.delete {
+  color: #bb2222;
+  font-size: 2.3rem;
+  position: absolute;
+  top: 15px;
+  left: 10px;
+  z-index: 2;
+  margin-bottom: 2rem;
+}
+
+.card-icon-btn.favorite {
+  color: #bbb;
+  font-size: 2.3rem;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 2;
+}
+
+.card-icon-btn.favorite.fav {
+  color: red;
+}
+
+.card-icon-btn.edit {
+  color: #5E4631;
+  font-size: 2.3rem;
+  position: absolute;
+  top: 15px;      /* Igual que el de eliminar */
+  left: 55px;     /* Separado a la derecha del icono eliminar */
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon-btn:hover {
+  opacity: 0.8;
+  color: #222;
+}
+
+.card-icon-btn.favorite.fav:hover {
+  color: #b30000;
+}
+
+.card-icon-btn.edit:hover {
+  color: #bfa16c;
+  opacity: 0.8;
+}
+
+.card-icon-btn.edit i {
+  font-size: 2.3rem; /* Asegura que el <i> tenga el mismo tamaño */
+}
+
