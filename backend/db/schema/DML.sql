@@ -1,3 +1,6 @@
+
+CREATE DATABASE "cuncunaDB"
+
 -- ROLES (sin id manual)
 INSERT INTO roles (nombre) VALUES
   ('cliente'),
