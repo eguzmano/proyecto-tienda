@@ -10,7 +10,7 @@ const ProductProvider = ({ children }) => {
     try {
       const res = await fetch('http://localhost:5000/api/productos')
       const data = await res.json()
-      setProducts(data.productos)
+      setProducts((data.productos || []).map(p => ({ ...p, precio: Number(p.precio) })))
     } catch (error) {
       console.log('Error fetching products:', error)
     }
@@ -20,7 +20,7 @@ const ProductProvider = ({ children }) => {
     try {
       const res = await fetch(`http://localhost:5000/api/productos/${id}`)
       const data = await res.json()
-      setProduct(data.producto)
+      setProduct(data.producto ? { ...data.producto, precio: Number(data.producto.precio) } : null)
     } catch (error) {
       console.log('Error fetching product:', error)
       setProduct(null)
@@ -36,12 +36,28 @@ const ProductProvider = ({ children }) => {
     setProducts(products => products.filter(p => Number(p.id) !== Number(id)))
   }
 
+  // Actualiza en memoria el detalle y la lista
+  const updateProduct = (updated) => {
+    setProducts(prev =>
+      prev.map(p => Number(p.id) === Number(updated.id)
+        ? { ...p, ...updated, precio: Number(updated.precio) }
+        : p
+      )
+    )
+    setProduct(prev =>
+      prev && Number(prev.id) === Number(updated.id)
+        ? { ...prev, ...updated, precio: Number(updated.precio) }
+        : prev
+    )
+  }
+
   const globalState = useMemo(() => ({
     products,
     product,
     fetchProduct,
     clearProduct,
-    removeProduct
+    removeProduct,
+    updateProduct
   }), [products, product])
 
   return (

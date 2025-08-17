@@ -4,7 +4,6 @@ import { ProductContext } from '../../context/ProductsContext'
 import { CardProduct } from '../../components'
 import './Gallery.css'
 
-// Ejemplo de categorías (puedes traerlas de contexto o backend si lo prefieres)
 const categorias = [
   { id: 1, nombre: 'Cajoneras' },
   { id: 2, nombre: 'Jugueteros' },
@@ -21,14 +20,12 @@ const Gallery = () => {
     categoriaParam ? Number(categoriaParam) : null
   )
 
-  // Sincroniza el filtro con la URL cada vez que cambia
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const categoriaParam = params.get('categoria')
     setCategoriaSeleccionada(categoriaParam ? Number(categoriaParam) : null)
   }, [location.search])
 
-  // Para cada categoría, busca la imagen de un producto de esa categoría
   const categoriasConImagen = categorias.map(cat => {
     const producto = products.find(p => p.categoria_id === cat.id)
     return {
@@ -37,14 +34,12 @@ const Gallery = () => {
     }
   })
 
-  // Filtra productos por categoría si hay una seleccionada
   const productosFiltrados = categoriaSeleccionada
     ? products.filter(producto => producto.categoria_id === categoriaSeleccionada)
     : products
 
   return (
     <div>
-      {/* Categorías */}
       <div className='gallery-categorias'>
         {categoriasConImagen.map(cat => (
           <div
@@ -59,7 +54,6 @@ const Gallery = () => {
             <span className='gallery-categoria-nombre'>{cat.nombre}</span>
           </div>
         ))}
-        {/* Botón para limpiar filtro */}
         {categoriaSeleccionada && (
           <button className='gallery-categoria-clear' onClick={() => setCategoriaSeleccionada(null)}>
             Ver todas
@@ -67,7 +61,6 @@ const Gallery = () => {
         )}
       </div>
 
-      {/* Productos */}
       <div className='cards'>
         {productosFiltrados?.length > 0
           ? (
@@ -78,7 +71,7 @@ const Gallery = () => {
                   nombre={nombre}
                   imagen_url={imagen_url}
                   precio={precio}
-                  onDelete={removeProduct} // <-- para eliminar del estado al instante
+                  onDelete={removeProduct}
                 />
               ))
             )

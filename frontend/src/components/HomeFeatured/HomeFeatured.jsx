@@ -31,7 +31,7 @@ const HomeFeatured = () => {
                     <div className='card-body-featured'>
                       <h3 className='card-title'>{capitalize(producto.nombre)}</h3>
                       <p className='card-text'>{producto.descripcion}</p>
-                      <p className='card-text precio'>Precio: ${formatNumber(producto.precio)}</p>
+                      <p className='card-text precio'>Precio: ${formatNumber(Number(producto.precio))}</p>
                       <div className='featured-buttons'>
                         <button
                           className='btn btn-light me-4'
@@ -56,7 +56,7 @@ const HomeFeatured = () => {
                     <div className='card-body-featured'>
                       <h3 className='card-title'>{capitalize(producto.nombre)}</h3>
                       <p className='card-text'>{producto.descripcion}</p>
-                      <p className='card-text precio'>Precio: ${formatNumber(producto.precio)}</p>
+                      <p className='card-text precio'>Precio: ${formatNumber(Number(producto.precio))}</p>
                       <div className='featured-buttons'>
                         <button
                           className='btn btn-light me-2'

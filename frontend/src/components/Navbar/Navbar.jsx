@@ -19,6 +19,7 @@ const StoreNavbar = ({ isTransparent }) => {
 
   return (
     <Navbar expand='lg' className={`navbar ${isTransparent ? 'navbar-transparent' : ''}`}>
+      {/* TODO: implementar */}
       <Container fluid className='mx-5'>
         <Navbar.Brand as={Link} to='/'><Image className='navbar-logo' src={logo} fluid /></Navbar.Brand>
         <Navbar.Toggle aria-controls='navbarScroll' />
@@ -45,7 +46,7 @@ const StoreNavbar = ({ isTransparent }) => {
                   <Nav.Link as={Link} to='/ingresar'>Ingresar</Nav.Link>
                 </>
                 )}
-            <NavDropdown title='Categorias' id='navbarScrollingDropdown'>
+            <NavDropdown title='Productos' id='navbarScrollingDropdown'>
               <NavDropdown.Item as={Link} to='/productos?categoria=1'>Cajoneras</NavDropdown.Item>
               <NavDropdown.Item as={Link} to='/productos?categoria=2'>Jugueteros</NavDropdown.Item>
               <NavDropdown.Item as={Link} to='/productos?categoria=3'>Muebles</NavDropdown.Item>

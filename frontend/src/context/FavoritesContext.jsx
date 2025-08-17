@@ -33,7 +33,7 @@ const FavoritesProvider = ({ children }) => {
       console.error('Error al eliminar favorito:', error)
       return false
     } finally {
-      await fetchFavorites() // asegura sincronización
+      await fetchFavorites()
     }
   }
 

@@ -2,11 +2,31 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Breadcrumb from 'react-bootstrap/Breadcrumb'
 import { ArrowLeft } from 'react-bootstrap-icons'
 import './Breadcrumb.css'
+import { useContext, useEffect } from 'react'
+import { ProductContext } from '../../context/ProductsContext'
 
 const StoreBreadcrumb = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const pathnames = location.pathname.split('/').filter(x => x)
+
+  const { products, product, fetchProduct } = useContext(ProductContext)
+
+  const isProductRoute = pathnames[0] === 'productos'
+  const lastSegment = pathnames[pathnames.length - 1]
+  const lastId = Number(lastSegment)
+  const prodFromList = (isProductRoute && !Number.isNaN(lastId))
+    ? products.find(p => Number(p.id) === lastId)
+    : null
+  const currentProductName =
+    prodFromList?.nombre ||
+    ((product && Number(product.id) === lastId) ? product.nombre : null)
+
+  useEffect(() => {
+    if (isProductRoute && !Number.isNaN(lastId) && !prodFromList) {
+      fetchProduct?.(lastId)
+    }
+  }, [isProductRoute, lastId, prodFromList, fetchProduct])
 
   const nameMap = {
     productos: 'Productos',
@@ -14,7 +34,8 @@ const StoreBreadcrumb = () => {
     cart: 'Carrito',
     perfil: 'Perfil',
     favoritos: 'Favoritos',
-    nuevo: 'Nuevo Producto'
+    nuevo: 'Nuevo Producto',
+    editar: 'Editar Producto'
   }
 
   return (
@@ -30,11 +51,14 @@ const StoreBreadcrumb = () => {
         </button>
       )}
       <Breadcrumb className='mt-3'>
-        <Breadcrumb.Item linkAs={Link} to='/'>Inicio</Breadcrumb.Item>
+        <Breadcrumb.Item linkAs={Link} linkProps={{ to: '/' }}>Inicio</Breadcrumb.Item>
         {pathnames.map((name, index) => {
           const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`
           const isLast = index === pathnames.length - 1
-          const displayName = nameMap[name] || decodeURIComponent(name)
+          // Si el último segmento es un ID de producto, muestra su nombre
+          const displayName = (isLast && isProductRoute && !Number.isNaN(Number(name)))
+            ? (currentProductName || '...')
+            : (nameMap[name] || decodeURIComponent(name))
           return isLast
             ? (
               <Breadcrumb.Item active key={name}>
@@ -42,7 +66,7 @@ const StoreBreadcrumb = () => {
               </Breadcrumb.Item>
               )
             : (
-              <Breadcrumb.Item linkAs={Link} to={routeTo} key={name}>
+              <Breadcrumb.Item linkAs={Link} linkProps={{ to: routeTo }} key={name}>
                 {displayName}
               </Breadcrumb.Item>
               )

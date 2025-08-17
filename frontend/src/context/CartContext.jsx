@@ -29,14 +29,12 @@ const CartProvider = ({ children }) => {
     localStorage.setItem('cart', JSON.stringify(cart))
   }, [cart])
 
-  // Cargar carrito del backend al iniciar sesión
   useEffect(() => {
     const fetchCart = async () => {
       if (user?.id && token && products.length > 0) {
         try {
           const res = await fetch(`http://localhost:5000/api/clientes/${user.id}/carro`)
           const data = await res.json()
-          // Filtra y suma cantidades si hay duplicados
           const cartMap = {}
           data.forEach(item => {
             const prod = products.find(p => Number(p.id) === Number(item.producto_id))
@@ -46,7 +44,7 @@ const CartProvider = ({ children }) => {
                 id: item.producto_id,
                 count: item.cantidad,
                 nombre: prod.nombre,
-                precio: prod.precio,
+                precio: Number(prod.precio),
                 imagen_url: prod.imagen_url
               }
             } else {
@@ -77,7 +75,6 @@ const CartProvider = ({ children }) => {
     )
   }
 
-  // Al agregar al carrito, sincroniza con backend
   const addToCart = async (product) => {
     const swalOptions = {
       toast: true,
@@ -100,7 +97,6 @@ const CartProvider = ({ children }) => {
     }
 
     try {
-      // Siempre enviar cantidad: 1 para sumar de a uno
       await fetch(`http://localhost:5000/api/clientes/${user.id}/carro`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -113,7 +109,6 @@ const CartProvider = ({ children }) => {
         title: `${product.nombre} añadida al carrito 🛒`
       })
 
-      // Vuelve a cargar el carrito desde el backend para asegurar sincronización
       const res = await fetch(`http://localhost:5000/api/clientes/${user.id}/carro`)
       const data = await res.json()
       const cartMap = {}
@@ -125,7 +120,7 @@ const CartProvider = ({ children }) => {
             id: item.producto_id,
             count: item.cantidad,
             nombre: prod.nombre,
-            precio: prod.precio,
+            precio: Number(prod.precio),
             imagen_url: prod.imagen_url
           }
         } else {
@@ -142,7 +137,6 @@ const CartProvider = ({ children }) => {
     }
   }
 
-  // Al eliminar del carrito, sincroniza con backend
   const removeAll = async (id) => {
     if (!user?.id) return
     await fetch(`http://localhost:5000/api/clientes/${user.id}/carro/${id}`, {
@@ -153,7 +147,6 @@ const CartProvider = ({ children }) => {
 
   const clearCart = async () => {
     if (user?.id && cart.length > 0) {
-      // Elimina cada producto del carrito en el backend
       await Promise.all(
         cart.map(item =>
           fetch(`http://localhost:5000/api/clientes/${user.id}/carro/${item.id}`, {

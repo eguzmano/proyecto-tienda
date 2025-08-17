@@ -3,15 +3,19 @@ import formatNumber from '../../utils/formatNumber'
 import { useContext, useEffect, useState } from 'react'
 import { CartContext } from '../../context/CartContext'
 import { ProductContext } from '../../context/ProductsContext'
+import { UserContext } from '../../context/UserContext'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import './DetailProduct.css'
+import { FavoritesContext } from '../../context/FavoritesContext'
 
 const DetailProduct = () => {
   const { id } = useParams()
   const { product, fetchProduct } = useContext(ProductContext)
   const { addToCart } = useContext(CartContext)
+  const { user } = useContext(UserContext)
+  const { favorites, addFavorite, removeFavorite } = useContext(FavoritesContext)
   const [fav, setFav] = useState(false)
   const navigate = useNavigate()
 
@@ -19,19 +23,30 @@ const DetailProduct = () => {
     if (id) {
       fetchProduct(id)
     }
-    // Opcional: limpiar producto al desmontar
-    // return () => clearProduct()
   }, [id, fetchProduct])
+
+  useEffect(() => {
+    const isFav = favorites.some(f => Number(f.producto_id) === Number(id))
+    setFav(isFav)
+  }, [favorites, id])
 
   if (!product) return <p className='text-center mt-5'>Cargando producto...</p>
 
   const handleFavorite = async () => {
     try {
-      await axios.post('http://localhost:5000/api/favoritos', { producto_id: id })
-      setFav(true)
-      Swal.fire('Agregado a favoritos', '', 'success')
+      if (fav) {
+        const ok = await removeFavorite(id)
+        if (ok) {
+          setFav(false)
+          Swal.fire('Eliminado de favoritos', '', 'success')
+        }
+      } else {
+        await addFavorite(id)
+        setFav(true)
+        Swal.fire('Agregado a favoritos', '', 'success')
+      }
     } catch (error) {
-      Swal.fire('Error al agregar a favoritos', '', 'error')
+      Swal.fire('Error al actualizar favoritos', '', 'error')
     }
   }
 
@@ -57,24 +72,25 @@ const DetailProduct = () => {
 
   return (
     <div className='card my-5 mx-auto shadow' style={{ maxWidth: '1200px', position: 'relative' }}>
-      {/* Botón eliminar (X) */}
-      <button
-        className='detail-icon-btn delete'
-        onClick={handleDelete}
-        aria-label='Eliminar producto'
-      >
-        <i className='bi bi-x-lg' />
-      </button>
-      {/* Botón editar (lápiz) */}
-      <button
-        className='detail-icon-btn edit'
-        onClick={() => navigate(`/productos/editar/${id}`)}
-        aria-label='Editar producto'
-        style={{ position: 'absolute', top: 55, left: 15, color: '#5E4631', fontSize: '1.5rem', zIndex: 2 }}
-      >
-        <i className='bi bi-pencil-square' />
-      </button>
-      {/* Botón favoritos */}
+      {user?.rol_id === 2 && (
+        <button
+          className='detail-icon-btn delete'
+          onClick={handleDelete}
+          aria-label='Eliminar producto'
+        >
+          <i className='bi bi-x-lg' />
+        </button>
+      )}
+      {user?.rol_id === 2 && (
+        <button
+          className='detail-icon-btn edit'
+          onClick={() => navigate(`/productos/editar/${id}`)}
+          aria-label='Editar producto'
+          style={{ position: 'absolute', top: 55, left: 15, color: '#5E4631', fontSize: '1.5rem', zIndex: 2 }}
+        >
+          <i className='bi bi-pencil-square' />
+        </button>
+      )}
       <button
         className={`detail-icon-btn favorite${fav ? ' fav' : ''}`}
         onClick={handleFavorite}

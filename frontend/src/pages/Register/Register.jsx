@@ -37,7 +37,6 @@ const Register = () => {
     e.preventDefault()
     const { nombre, email, telefono, direccion, password, repeatPassword } = users
 
-    // Validaciones
     if (!nombre.trim() || !email.trim() || !telefono.trim() || !direccion.trim() || !password.trim() || !repeatPassword.trim()) {
       Swal.fire({
         ...swalOptions,

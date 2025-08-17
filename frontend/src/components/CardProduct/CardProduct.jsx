@@ -4,6 +4,7 @@ import capitalize from '../../utils/capitalize'
 import { useContext, useState } from 'react'
 import { CartContext } from '../../context/CartContext'
 import { FavoritesContext } from '../../context/FavoritesContext'
+import { UserContext } from '../../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Swal from 'sweetalert2'
@@ -12,6 +13,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
   const { addToCart } = useContext(CartContext)
   const { addFavorite, removeFavorite, favorites } = useContext(FavoritesContext)
+  const { user } = useContext(UserContext)
   const navigate = useNavigate()
   const [loadingFav, setLoadingFav] = useState(false)
   const isFav = favorites.some(f => Number(f.producto_id) === Number(id))
@@ -58,15 +60,15 @@ const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
 
   return (
     <div className='card mx-3 my-3 card-product' style={{ position: 'relative' }}>
-      {/* Botón eliminar (X) */}
-      <button
-        className='card-icon-btn delete'
-        onClick={handleDelete}
-        aria-label='Eliminar producto'
-      >
-        <i className='bi bi-x-lg' />
-      </button>
-      {/* Botón favoritos */}
+      {user?.rol_id === 2 && (
+        <button
+          className='card-icon-btn delete'
+          onClick={handleDelete}
+          aria-label='Eliminar producto'
+        >
+          <i className='bi bi-x-lg' />
+        </button>
+      )}
       <button
         className={`card-icon-btn favorite${isFav ? ' fav' : ''}`}
         onClick={handleFavorite}
@@ -75,15 +77,16 @@ const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
       >
         <i className={isFav ? 'bi bi-heart-fill' : 'bi bi-heart'} />
       </button>
-      {/* Botón editar */}
-      <button
-        className='card-icon-btn edit'
-        onClick={() => navigate(`/productos/editar/${id}`)}
-        aria-label='Editar producto'
-        style={{ position: 'absolute', top: 50, left: 10, color: '#5E4631', fontSize: '1.5rem', zIndex: 2 }}
-      >
-        <i className='bi bi-pencil-square' />
-      </button>
+      {user?.rol_id === 2 && (
+        <button
+          className='card-icon-btn edit'
+          onClick={() => navigate(`/productos/editar/${id}`)}
+          aria-label='Editar producto'
+          style={{ position: 'absolute', top: 50, left: 10, color: '#5E4631', fontSize: '1.5rem', zIndex: 2 }}
+        >
+          <i className='bi bi-pencil-square' />
+        </button>
+      )}
       <img src={imagen_url} className='card-img-top' alt={nombre} />
       <div className='card-body d-flex flex-column'>
         <ul className='list-group list-group-flush'>

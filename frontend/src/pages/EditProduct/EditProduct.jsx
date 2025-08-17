@@ -7,7 +7,7 @@ import Swal from 'sweetalert2'
 
 const EditProduct = () => {
   const { id } = useParams()
-  const { fetchProduct, product } = useContext(ProductContext)
+  const { fetchProduct, product, updateProduct } = useContext(ProductContext)
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
@@ -17,7 +17,9 @@ const EditProduct = () => {
 
   const handleUpdateProduct = async (payload) => {
     try {
-      await axios.put(`http://localhost:5000/api/productos/${id}`, payload)
+      const { data } = await axios.put(`http://localhost:5000/api/productos/${id}`, payload)
+      const updated = data.producto || { ...payload, id }
+      updateProduct(updated)
       Swal.fire('¡Producto actualizado!', '', 'success')
       navigate('/productos')
     } catch (error) {
@@ -31,7 +33,7 @@ const EditProduct = () => {
     <NewProduct
       initialProduct={product}
       onSubmit={handleUpdateProduct}
-      editMode={true}
+      editMode
     />
   )
 }

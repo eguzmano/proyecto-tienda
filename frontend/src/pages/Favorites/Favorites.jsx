@@ -15,7 +15,7 @@ const Favorites = () => {
   return (
     <div className='favorites-page d-flex flex-wrap justify-content-center'>
       {favoriteProducts.length === 0
-        ? <p>No tienes productos favoritos.</p>
+        ? <p className='fs-5'>No tienes productos favoritos.</p>
         : favoriteProducts.map(producto => (
           <CardProduct key={producto.id} {...producto} onDelete={removeProduct} />
         ))}

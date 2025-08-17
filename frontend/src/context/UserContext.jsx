@@ -25,7 +25,6 @@ const UserProvider = ({ children }) => {
   const authResponse = (data, redirectPath = '/perfil') => {
     if (data?.token) {
       setToken(data.token)
-      // Usa el objeto user completo si existe
       if (data.user) {
         setUser(data.user)
       } else {
@@ -58,15 +57,15 @@ const UserProvider = ({ children }) => {
         setToken(data.token)
         localStorage.setItem('token', data.token)
         setUser({
-          id: data.id, // <--- agrega esto
+          id: data.id,
           email: data.email,
           nombre: data.nombre,
-          rol_id: data.rol_id // <--- agrega esto si lo usas
+          rol_id: data.rol_id
         })
         Swal.fire({
           ...swalOptions,
           icon: 'success',
-          title: `✅ Bienvenido ${data.nombre || data.email}` // Muestra el nombre si existe
+          title: `✅ Bienvenido ${data.nombre || data.email}`
         })
         navigate('/perfil')
       }

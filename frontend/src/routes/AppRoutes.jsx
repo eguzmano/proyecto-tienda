@@ -20,8 +20,6 @@ const AppRoutes = () => {
         <Route path='/cart' element={<Cart />} />
         <Route path='/productos/:id' element={<DetailProduct />} />
         <Route path='/productos' element={<Gallery />} />
-
-        {/* <Route path='/*' element={<NotFound />} /> */}
       </Routes>
     </div>
   )
