@@ -5,19 +5,7 @@ CREATE DATABASE "cuncunaDB"
 INSERT INTO roles (nombre) VALUES
   ('cliente'),
   ('administrador');
-
--- CLIENTES (nota: asegúrate que la columna se llame igual que en tu schema; si tienes "contraseña", usa ese nombre)
-INSERT INTO clientes (nombre, email, password, direccion, telefono, rol_id, creado_en)
-VALUES
-('Ana Pérez','ana.perez@example.com','hash1','Av. Siempre Viva 123','+56911111111',
-  (SELECT id FROM roles WHERE nombre='cliente'), NOW()),
-('Admin','admin@example.com','123123','Av. Siempre Viva 123','+56911111111',
-  (SELECT id FROM roles WHERE nombre='administrador'), NOW()),
-('Luis Soto','luis.soto@example.com','hash2','Calle Falsa 456','+56922222222',
-  (SELECT id FROM roles WHERE nombre='cliente'), NOW()),
-('María Rojas','maria.rojas@example.com','hash3','Pasaje Los Pinos 789','+56933333333',
-  (SELECT id FROM roles WHERE nombre='cliente'), NOW());
-
+  
 -- CATEGORÍAS (sin id manual)
 INSERT INTO categorias (nombre, descripcion) VALUES
 ('Cajonera','Cajoneras y cómodas'),
