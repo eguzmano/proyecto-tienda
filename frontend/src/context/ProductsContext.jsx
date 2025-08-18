@@ -36,7 +36,6 @@ const ProductProvider = ({ children }) => {
     setProducts(products => products.filter(p => Number(p.id) !== Number(id)))
   }
 
-  // Actualiza en memoria el detalle y la lista
   const updateProduct = (updated) => {
     setProducts(prev =>
       prev.map(p => Number(p.id) === Number(updated.id)
@@ -51,13 +50,19 @@ const ProductProvider = ({ children }) => {
     )
   }
 
+  const addProduct = (nuevo) => {
+    if (!nuevo) return
+    setProducts(prev => [...prev, { ...nuevo, precio: Number(nuevo.precio) }])
+  }
+
   const globalState = useMemo(() => ({
     products,
     product,
     fetchProduct,
     clearProduct,
     removeProduct,
-    updateProduct
+    updateProduct,
+    addProduct
   }), [products, product])
 
   return (

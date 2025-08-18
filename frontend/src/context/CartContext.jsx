@@ -62,17 +62,39 @@ const CartProvider = ({ children }) => {
     fetchCart()
   }, [user, token, products])
 
+  const syncQuantity = async (productoId, delta) => {
+    if (!user?.id) return
+    try {
+      await fetch(`http://localhost:5000/api/clientes/${user.id}/carro/${productoId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ delta })
+      })
+
+      const res = await fetch(`http://localhost:5000/api/clientes/${user.id}/carro`)
+      const data = await res.json()
+      const cartMap = {}
+      data.forEach(item => {
+        const prod = products.find(p => Number(p.id) === Number(item.producto_id))
+        if (!prod) return
+        cartMap[item.producto_id] = {
+          id: item.producto_id,
+          count: item.cantidad,
+          nombre: prod.nombre,
+          precio: Number(prod.precio),
+          imagen_url: prod.imagen_url
+        }
+      })
+      setCart(Object.values(cartMap))
+    } catch (_) {}
+  }
+
   const increaseQuantity = (id) => {
-    setCart(cart.map(p =>
-      p.id === id ? { ...p, count: p.count + 1 } : p
-    ))
+    return syncQuantity(id, 1)
   }
 
   const decreaseQuantity = (id) => {
-    setCart(cart
-      .map(p => p.id === id ? { ...p, count: p.count - 1 } : p)
-      .filter(p => p.count > 0)
-    )
+    return syncQuantity(id, -1)
   }
 
   const addToCart = async (product) => {

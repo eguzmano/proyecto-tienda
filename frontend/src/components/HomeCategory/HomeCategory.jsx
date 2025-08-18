@@ -1,7 +1,7 @@
 import Carousel from 'react-bootstrap/Carousel'
 import cajoneras from '../../assets/imgs/cajonera-1-1.jpeg'
 import jugueteros from '../../assets/imgs/Juguetero-6-1.jpg'
-import repisas from '../../assets/imgs/Repisa-rectangular-3.jpg'
+import repisas from '../../assets/imgs/Repisa-Rectangular-3.jpg'
 import './HomeCategory.css'
 
 const HomeCategory = () => {

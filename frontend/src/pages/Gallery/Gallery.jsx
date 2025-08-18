@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { ProductContext } from '../../context/ProductsContext'
 import { CardProduct } from '../../components'
 import './Gallery.css'
@@ -14,17 +14,37 @@ const categorias = [
 const Gallery = () => {
   const { products, removeProduct } = useContext(ProductContext)
   const location = useLocation()
+  const navigate = useNavigate()
   const params = new URLSearchParams(location.search)
   const categoriaParam = params.get('categoria')
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(
     categoriaParam ? Number(categoriaParam) : null
   )
+  const [query, setQuery] = useState('')
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const categoriaParam = params.get('categoria')
+    const qParam = (params.get('q') || '').trim()
     setCategoriaSeleccionada(categoriaParam ? Number(categoriaParam) : null)
+    setQuery(qParam)
   }, [location.search])
+
+  // Al seleccionar categoría, limpiar búsqueda y reflejar en la URL
+  const handleSelectCategoria = (id) => {
+    setCategoriaSeleccionada(Number(id))
+    setQuery('')
+    const sp = new URLSearchParams(location.search)
+    sp.set('categoria', String(id))
+    sp.delete('q') // Si quieres combinar filtros, elimina esta línea
+    navigate(`/productos?${sp.toString()}`)
+  }
+
+  const handleVerTodas = () => {
+    setCategoriaSeleccionada(null)
+    setQuery('')
+    navigate('/productos')
+  }
 
   const categoriasConImagen = categorias.map(cat => {
     const producto = products.find(p => p.categoria_id === cat.id)
@@ -34,9 +54,17 @@ const Gallery = () => {
     }
   })
 
-  const productosFiltrados = categoriaSeleccionada
+  const porCategoria = categoriaSeleccionada
     ? products.filter(producto => producto.categoria_id === categoriaSeleccionada)
     : products
+
+  const q = query.toLowerCase()
+  const productosFiltrados = q
+    ? porCategoria.filter(p =>
+      (p.nombre?.toLowerCase().includes(q)) ||
+        (p.descripcion?.toLowerCase().includes(q))
+    )
+    : porCategoria
 
   return (
     <div>
@@ -45,7 +73,7 @@ const Gallery = () => {
           <div
             key={cat.id}
             className={`gallery-categoria-img${categoriaSeleccionada === cat.id ? ' selected' : ''}`}
-            onClick={() => setCategoriaSeleccionada(Number(cat.id))}
+            onClick={() => handleSelectCategoria(cat.id)}
             style={{
               backgroundImage: `url(${cat.imagen})`,
               cursor: 'pointer'
@@ -55,7 +83,7 @@ const Gallery = () => {
           </div>
         ))}
         {categoriaSeleccionada && (
-          <button className='gallery-categoria-clear' onClick={() => setCategoriaSeleccionada(null)}>
+          <button className='gallery-categoria-clear' onClick={handleVerTodas}>
             Ver todas
           </button>
         )}

@@ -35,7 +35,9 @@ const StoreBreadcrumb = () => {
     perfil: 'Perfil',
     favoritos: 'Favoritos',
     nuevo: 'Nuevo Producto',
-    editar: 'Editar Producto'
+    editar: 'Editar Producto',
+    registro: 'Registro',
+    ingresar: 'Ingresar'
   }
 
   return (

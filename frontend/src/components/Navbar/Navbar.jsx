@@ -7,15 +7,23 @@ import NavDropdown from 'react-bootstrap/NavDropdown'
 import Image from 'react-bootstrap/Image'
 import logo from '../../assets/imgs/logo.png'
 import './Navbar.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import formatNumber from '../../utils/formatNumber'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { CartContext } from '../../context/CartContext'
 import { UserContext } from '../../context/UserContext'
 
 const StoreNavbar = ({ isTransparent }) => {
   const { total } = useContext(CartContext)
   const { token, logout, user } = useContext(UserContext)
+  const [query, setQuery] = useState('')
+  const navigate = useNavigate()
+
+  const onSearchSubmit = (e) => {
+    e.preventDefault()
+    const q = query.trim()
+    navigate(q ? `/productos?q=${encodeURIComponent(q)}` : '/productos')
+  }
 
   return (
     <Navbar expand='lg' className={`navbar ${isTransparent ? 'navbar-transparent' : ''}`}>
@@ -46,14 +54,7 @@ const StoreNavbar = ({ isTransparent }) => {
                   <Nav.Link as={Link} to='/ingresar'>Ingresar</Nav.Link>
                 </>
                 )}
-            <NavDropdown title='Productos' id='navbarScrollingDropdown'>
-              <NavDropdown.Item as={Link} to='/productos?categoria=1'>Cajoneras</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to='/productos?categoria=2'>Jugueteros</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to='/productos?categoria=3'>Muebles</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to='/productos?categoria=4'>Libreros</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to='/productos'>Todas los productos</NavDropdown.Item>
-            </NavDropdown>
+            <Nav.Link as={Link} to='/productos'>Productos</Nav.Link>
           </Nav>
           <div className='d-flex align-items-center ms-auto gap-2'>
             {token && (
@@ -66,14 +67,18 @@ const StoreNavbar = ({ isTransparent }) => {
                 🛒 Total: ${formatNumber(total)}
               </button>
             </Link>
-            <Form className='d-flex ms-3'>
+            <Form className='d-flex ms-3' onSubmit={onSearchSubmit}>
               <Form.Control
                 type='search'
                 placeholder='Que andas buscando'
                 className='me-2 my-2'
                 aria-label='Search'
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
               />
-              <Button variant='outline-success' className='btn-search'><i className='bi bi-search' /></Button>
+              <Button type='submit' variant='outline-success' className='btn-search'>
+                <i className='bi bi-search' />
+              </Button>
             </Form>
           </div>
         </Navbar.Collapse>
