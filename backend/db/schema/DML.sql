@@ -1,47 +1,89 @@
+CREATE TABLE "roles" (
+  "id" SERIAL PRIMARY KEY,
+  "nombre" varchar UNIQUE
+);
 
-CREATE DATABASE "cuncunaDB"
+CREATE TABLE "clientes" (
+  "id" SERIAL PRIMARY KEY,
+  "nombre" varchar,
+  "email" varchar UNIQUE,
+  "password" varchar,
+  "direccion" text,
+  "telefono" varchar,
+  "rol_id" integer DEFAULT 1,
+  "creado_en" timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT "fk_clientes_rol" FOREIGN KEY ("rol_id") REFERENCES "roles" ("id")
+);
 
--- ROLES (sin id manual)
-INSERT INTO roles (nombre) VALUES
-  ('cliente'),
-  ('administrador');
-  
--- CATEGORÍAS (sin id manual)
-INSERT INTO categorias (nombre, descripcion) VALUES
-('Cajonera','Cajoneras y cómodas'),
-('Juguetero','Muebles organizadores para juguetes'),
-('Muebles','Conjuntos y mobiliario general'),
-('Librero','Libreros para niños');
+CREATE TABLE "categorias" (
+  "id" SERIAL PRIMARY KEY,
+  "nombre" varchar,
+  "descripcion" text
+);
 
--- PRODUCTOS (referenciando categoria por nombre)
-INSERT INTO productos (nombre, descripcion, precio, stock, imagen_url, categoria_id, creado_en) VALUES
-('Cajonera alta', $$...texto largo...$$, 210000,4,'https://elefanta.cl/wp-content/uploads/2024/07/IMG_1102-scaled.jpeg',
- (SELECT id FROM categorias WHERE nombre='Cajonera'), '2025-08-05 23:00:00'),
-('Juguetero 6 espacios', $$...$$, 220900,5,'https://elefanta.cl/wp-content/uploads/2019/10/Juguetero-6-espacios-1.jpg',
- (SELECT id FROM categorias WHERE nombre='Juguetero'), '2025-08-05 23:00:00'),
-('Mesa natural y 2 Sillas Preescolares', $$...$$, 85900,3,'https://elefanta.cl/wp-content/uploads/2019/10/elefanta1-32-scaled-600x400.jpg',
- (SELECT id FROM categorias WHERE nombre='Muebles'), '2025-08-05 23:00:00'),
-('Librero suelo', $$...$$, 38900,6,'https://elefanta.cl/wp-content/uploads/2019/10/Librero-Suelo-1.jpg',
- (SELECT id FROM categorias WHERE nombre='Librero'), '2025-08-05 23:00:00');
+CREATE TABLE "productos" (
+  "id" SERIAL PRIMARY KEY,
+  "nombre" varchar,
+  "descripcion" text,
+  "precio" decimal,
+  "stock" integer,
+  "imagen_url" varchar,
+  "categoria_id" integer,
+  "creado_en" timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT "fk_productos_categoria" FOREIGN KEY ("categoria_id") REFERENCES "categorias" ("id")
+);
 
--- COMENTARIOS (referenciando por email del cliente y nombre del producto)
-INSERT INTO comentarios (cliente_id, producto_id, comentario, calificacion, fecha) VALUES
-((SELECT id FROM clientes  WHERE email='ana.perez@example.com'),
- (SELECT id FROM productos WHERE nombre='Cajonera alta'), 'Buen producto, ideal para mi hija',4,'2025-08-06'),
-((SELECT id FROM clientes  WHERE email='ana.perez@example.com'),
- (SELECT id FROM productos WHERE nombre='Cajonera alta'), 'Bonito diseño pero el armado fue algo difícil.',3,'2025-08-06'),
-((SELECT id FROM clientes  WHERE email='ana.perez@example.com'),
- (SELECT id FROM productos WHERE nombre='Juguetero 6 espacios'), 'Llegó en el tiempo esperado. Todo perfecto.',5,'2025-08-06'),
-((SELECT id FROM clientes  WHERE email='luis.soto@example.com'),
- (SELECT id FROM productos WHERE nombre='Juguetero 6 espacios'), 'Un poco más pequeño de lo que imaginaba.',3,'2025-08-06'),
-((SELECT id FROM clientes  WHERE email='luis.soto@example.com'),
- (SELECT id FROM productos WHERE nombre='Mesa natural y 2 Sillas Preescolares'), 'Muy útil y resistente. Lo usamos todos los días.',4,'2025-08-06'),
-((SELECT id FROM clientes  WHERE email='maria.rojas@example.com'),
- (SELECT id FROM productos WHERE nombre='Mesa natural y 2 Sillas Preescolares'), 'Buena relación precio-calidad.',4,'2025-08-06'),
-((SELECT id FROM clientes  WHERE email='ana.perez@example.com'),
- (SELECT id FROM productos WHERE nombre='Mesa natural y 2 Sillas Preescolares'), 'Los materiales se sienten de buena calidad.',5,'2025-08-06'),
-((SELECT id FROM clientes  WHERE email='luis.soto@example.com'),
- (SELECT id FROM productos WHERE nombre='Librero suelo'), 'El color no coincidía con la imagen del sitio.',2,'2025-08-06'),
-((SELECT id FROM clientes  WHERE email='luis.soto@example.com'),
- (SELECT id FROM productos WHERE nombre='Librero suelo'), 'Perfecto para espacios pequeños.',4,'2025-08-06');
+CREATE TABLE "ventas" (
+  "id" SERIAL PRIMARY KEY,
+  "cliente_id" integer,
+  "total" decimal,
+  "fecha" timestamp,
+  "estado" varchar,
+  CONSTRAINT "fk_ventas_cliente" FOREIGN KEY ("cliente_id") REFERENCES "clientes" ("id")
+);
 
+CREATE TABLE "detalle_venta" (
+  "id" SERIAL PRIMARY KEY,
+  "venta_id" integer,
+  "producto_id" integer,
+  "cantidad" integer,
+  "precio_unitario" decimal,
+  CONSTRAINT "fk_detalle_venta_venta"
+    FOREIGN KEY ("venta_id") REFERENCES "ventas" ("id") ON DELETE CASCADE,
+  CONSTRAINT "fk_detalle_venta_producto"
+    FOREIGN KEY ("producto_id") REFERENCES "productos" ("id")
+);
+
+CREATE TABLE "comentarios" (
+  "id" SERIAL PRIMARY KEY,
+  "cliente_id" integer,
+  "producto_id" integer,
+  "comentario" text,
+  "calificacion" integer,
+  "fecha" timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT "fk_comentarios_cliente"
+    FOREIGN KEY ("cliente_id") REFERENCES "clientes" ("id") ON DELETE CASCADE,
+  CONSTRAINT "fk_comentarios_producto"
+    FOREIGN KEY ("producto_id") REFERENCES "productos" ("id") ON DELETE CASCADE
+);
+
+CREATE TABLE "favoritos" (
+  "id" SERIAL PRIMARY KEY,
+  "cliente_id" integer,
+  "producto_id" integer,
+  CONSTRAINT "fk_favoritos_cliente"
+    FOREIGN KEY ("cliente_id") REFERENCES "clientes" ("id") ON DELETE CASCADE,
+  CONSTRAINT "fk_favoritos_producto"
+    FOREIGN KEY ("producto_id") REFERENCES "productos" ("id") ON DELETE CASCADE
+);
+
+CREATE TABLE "carros" (
+  "id" SERIAL PRIMARY KEY,
+  "cliente_id" integer,
+  "producto_id" integer,
+  "cantidad" integer,
+  CONSTRAINT "fk_carros_cliente"
+    FOREIGN KEY ("cliente_id") REFERENCES "clientes" ("id") ON DELETE CASCADE,
+  CONSTRAINT "fk_carros_producto"
+    FOREIGN KEY ("producto_id") REFERENCES "productos" ("id") ON DELETE CASCADE
+);
