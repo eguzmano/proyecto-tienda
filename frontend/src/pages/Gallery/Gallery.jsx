@@ -30,13 +30,12 @@ const Gallery = () => {
     setQuery(qParam)
   }, [location.search])
 
-  // Al seleccionar categoría, limpiar búsqueda y reflejar en la URL
   const handleSelectCategoria = (id) => {
     setCategoriaSeleccionada(Number(id))
     setQuery('')
     const sp = new URLSearchParams(location.search)
     sp.set('categoria', String(id))
-    sp.delete('q') // Si quieres combinar filtros, elimina esta línea
+    sp.delete('q')
     navigate(`/productos?${sp.toString()}`)
   }
 
