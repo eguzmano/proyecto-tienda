@@ -9,11 +9,11 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import './DetailProduct.css'
 import { FavoritesContext } from '../../context/FavoritesContext'
-import { ProductComments } from '../../components'
+import { ProductComments, CardProduct } from '../../components' // <-- agregar CardProduct
 
 const DetailProduct = () => {
   const { id } = useParams()
-  const { product, fetchProduct } = useContext(ProductContext)
+  const { product, fetchProduct, products } = useContext(ProductContext) // <-- traer products también
   const { addToCart } = useContext(CartContext)
   const { user } = useContext(UserContext)
   const { favorites, addFavorite, removeFavorite } = useContext(FavoritesContext)
@@ -32,6 +32,14 @@ const DetailProduct = () => {
   }, [favorites, id])
 
   if (!product) return <p className='text-center mt-5'>Cargando producto...</p>
+
+  // Top 3 similares por categoría (excluye el mismo producto)
+  const similares = (products || [])
+    .filter(p =>
+      Number(p.categoria_id) === Number(product.categoria_id) &&
+      Number(p.id) !== Number(product.id)
+    )
+    .slice(0, 3)
 
   const handleFavorite = async () => {
     try {
@@ -119,6 +127,24 @@ const DetailProduct = () => {
 
       {/* Comentarios debajo del detalle */}
       <ProductComments productId={Number(id)} />
+
+      {/* Productos similares */}
+      <div className='container my-5'>
+        <h4 className='mb-3'>Productos Similares</h4>
+        <div className='d-flex flex-wrap justify-content-center'>
+          {similares.length > 0
+            ? similares.map(({ id, nombre, imagen_url, precio }) => (
+              <CardProduct
+                key={id}
+                id={id}
+                nombre={nombre}
+                imagen_url={imagen_url}
+                precio={precio}
+              />
+            ))
+            : <p className='text-muted'>No hay productos similares.</p>}
+        </div>
+      </div>
     </div>
   )
 }
