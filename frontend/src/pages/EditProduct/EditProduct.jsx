@@ -4,6 +4,7 @@ import { ProductContext } from '../../context/ProductsContext'
 import { NewProduct } from '../../components'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import { API_URL } from '../../config/env'
 
 const EditProduct = () => {
   const { id } = useParams()
@@ -17,7 +18,7 @@ const EditProduct = () => {
 
   const handleUpdateProduct = async (payload) => {
     try {
-      const { data } = await axios.put(`http://localhost:5000/api/productos/${id}`, payload)
+      const { data } = await axios.put(`${API_URL}/api/productos/${id}`, payload)
       const updated = data.producto || { ...payload, id }
       updateProduct(updated)
       Swal.fire('¡Producto actualizado!', '', 'success')

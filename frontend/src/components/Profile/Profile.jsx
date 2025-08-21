@@ -4,13 +4,25 @@ import { Button, Form } from 'react-bootstrap'
 import { PencilSquare } from 'react-bootstrap-icons'
 import Swal from 'sweetalert2'
 import './Profile.css'
+import { API_URL } from '../../config/env'
+import formatNumber from '../../utils/formatNumber'
+import { ProductContext } from '../../context/ProductsContext'
 
 const Profile = () => {
   const { user, getProfile } = useContext(UserContext)
+  const { products } = useContext(ProductContext)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [preview, setPreview] = useState(null)
-  const [activeSection, setActiveSection] = useState('datos') // 'datos' o 'direccion'
+  const [activeSection, setActiveSection] = useState('datos') // 'datos' | 'direccion' | 'compras'
+  const [orders, setOrders] = useState([])
+  const [ordersLoading, setOrdersLoading] = useState(false)
+  const [ordersError, setOrdersError] = useState(null)
+
+  const [selectedOrder, setSelectedOrder] = useState(null)
+  const [orderDetails, setOrderDetails] = useState([])
+  const [detailsLoading, setDetailsLoading] = useState(false)
+  const [detailsError, setDetailsError] = useState(null)
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -24,6 +36,28 @@ const Profile = () => {
     }
     fetchProfile()
   }, [])
+
+  // Cargar ventas y filtrar por usuario
+  useEffect(() => {
+    const fetchOrders = async () => {
+      if (activeSection !== 'compras' || !user?.id) return
+      try {
+        setOrdersLoading(true)
+        setOrdersError(null)
+        const res = await fetch(`${API_URL}/api/ventas`)
+        if (!res.ok) throw new Error('No se pudieron cargar las compras')
+        const data = await res.json()
+        const ventas = Array.isArray(data.ventas) ? data.ventas : []
+        setOrders(ventas.filter(v => Number(v.cliente_id) === Number(user.id)))
+      } catch (e) {
+        setOrders([])
+        setOrdersError(e.message)
+      } finally {
+        setOrdersLoading(false)
+      }
+    }
+    fetchOrders()
+  }, [activeSection, user])
 
   const handleEditImage = () => {
     Swal.fire({
@@ -52,6 +86,45 @@ const Profile = () => {
     })
   }
 
+  const loadOrderDetails = async (ventaId) => {
+    if (!ventaId) return
+    try {
+      setDetailsLoading(true)
+      setDetailsError(null)
+      setSelectedOrder(ventaId)
+      // Usa el endpoint existente de detalle_venta
+      const res = await fetch(`${API_URL}/api/detalleVenta/${ventaId}`)
+      if (!res.ok) throw new Error('No se pudo obtener el detalle de la compra')
+      const data = await res.json()
+      // El controlador puede responder { producto } o { productos } o un array
+      const raw = Array.isArray(data)
+        ? data
+        : Array.isArray(data.productos)
+          ? data.productos
+          : data.producto ? [data.producto] : []
+      // Enriquecer con nombre e imagen desde catálogo
+      const parsed = raw.map(d => {
+        const prod = products.find(p => Number(p.id) === Number(d.producto_id)) || {}
+        const cantidad = Number(d.cantidad || d.qty || 0)
+        const precio = Number(d.precio_unitario || d.precio || prod.precio || 0)
+        return {
+          ...d,
+          nombre: prod.nombre || `Producto #${d.producto_id}`,
+          imagen_url: prod.imagen_url,
+          cantidad,
+          precio_unitario: precio,
+          subtotal: cantidad * precio
+        }
+      })
+      setOrderDetails(parsed)
+    } catch (e) {
+      setOrderDetails([])
+      setDetailsError(e.message)
+    } finally {
+      setDetailsLoading(false)
+    }
+  }
+
   if (loading) return <p>⏳ Cargando perfil...</p>
   if (error || !user) return <p>⚠️ {error || 'No se pudo cargar el perfil.'}</p>
 
@@ -77,14 +150,15 @@ const Profile = () => {
           >
             Datos Personales
           </Button>
-          <Button variant='outline-secondary' className='profile-menu-btn mb-2' disabled>Compras</Button>
-          <Button variant='outline-secondary' className='profile-menu-btn mb-2' disabled>Tarjetas</Button>
           <Button
             variant='outline-secondary'
             className='profile-menu-btn mb-2'
-            onClick={() => setActiveSection('direccion')}
-            active={activeSection === 'direccion'}
+            onClick={() => setActiveSection('compras')}
+            active={activeSection === 'compras'}
           >
+            Compras
+          </Button>
+          <Button variant='outline-secondary' className='profile-menu-btn mb-2' onClick={() => setActiveSection('direccion')} active={activeSection === 'direccion'}>
             Direcciones
           </Button>
         </div>
@@ -123,6 +197,89 @@ const Profile = () => {
                 <Form.Control type='text' value={user.direccion || ''} disabled />
               </Form.Group>
             </Form>
+          </>
+        )}
+        {activeSection === 'compras' && (
+          <>
+            <h3 className='profile-title mb-4'>Mis Compras</h3>
+            {ordersLoading && <p>Cargando compras...</p>}
+            {ordersError && <p className='text-danger'>{ordersError}</p>}
+            {!ordersLoading && !ordersError && orders.length === 0 && (
+              <p className='text-muted'>Aún no tienes compras.</p>
+            )}
+            {!ordersLoading && orders.length > 0 && (
+              <div className='table-responsive'>
+                <table className='table align-middle'>
+                  <thead>
+                    <tr>
+                      {/* <th>#</th> */}
+                      <th>Fecha</th>
+                      <th>Estado</th>
+                      <th>Total</th>
+                      <th />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orders.map(o => (
+                      <tr key={o.id}>
+                        {/* <td>{o.id}</td> */}
+                        <td>{new Date(o.fecha).toLocaleString()}</td>
+                        <td>{o.estado}</td>
+                        <td>${formatNumber(Number(o.total || 0))}</td>
+                        <td>
+                          <button
+                            className='btn btn-sm btn-outline-secondary'
+                            onClick={() => loadOrderDetails(o.id)}
+                          >
+                            Ver detalle
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            {selectedOrder && (
+              <div className='mt-3'>
+                <h5>Detalle de compra #{selectedOrder}</h5>
+                {detailsLoading && <p>Cargando detalle...</p>}
+                {detailsError && <p className='text-danger'>{detailsError}</p>}
+                {!detailsLoading && !detailsError && orderDetails.length === 0 && (
+                  <p className='text-muted'>Sin ítems para esta compra.</p>
+                )}
+                {!detailsLoading && orderDetails.length > 0 && (
+                  <div className='table-responsive'>
+                    <table className='table'>
+                      <thead>
+                        <tr>
+                          <th>Producto</th>
+                          <th className='text-end'>Cant.</th>
+                          <th className='text-end'>P. unitario</th>
+                          <th className='text-end'>Subtotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {orderDetails.map((d, i) => (
+                          <tr key={`${d.producto_id}-${i}`}>
+                            <td>
+                              {d.imagen_url && (
+                                <img src={d.imagen_url} alt={d.nombre} style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 6, marginRight: 8 }} />
+                              )}
+                              {d.nombre}
+                            </td>
+                            <td className='text-end'>{d.cantidad}</td>
+                            <td className='text-end'>${formatNumber(d.precio_unitario)}</td>
+                            <td className='text-end'>${formatNumber(d.subtotal)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            )}
           </>
         )}
       </div>

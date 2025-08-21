@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import capitalize from '../../utils/capitalize'
 import formatNumber from '../../utils/formatNumber'
 import { useContext, useEffect, useState } from 'react'
@@ -10,6 +11,7 @@ import Swal from 'sweetalert2'
 import './DetailProduct.css'
 import { FavoritesContext } from '../../context/FavoritesContext'
 import { ProductComments, CardProduct } from '../../components' // <-- agregar CardProduct
+import { API_URL } from '../../config/env'
 
 const DetailProduct = () => {
   const { id } = useParams()
@@ -70,7 +72,7 @@ const DetailProduct = () => {
     })
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:5000/api/productos/${id}`)
+        await axios.delete(`${API_URL}/api/productos/${id}`)
         Swal.fire('Producto eliminado', '', 'success')
         navigate('/productos')
       } catch (error) {

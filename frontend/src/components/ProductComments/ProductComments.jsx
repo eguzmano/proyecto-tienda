@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
 import Swal from 'sweetalert2'
 import { UserContext } from '../../context/UserContext'
+import { API_URL } from '../../config/env'
 
 const ProductComments = ({ productId }) => {
   const [comments, setComments] = useState([])
@@ -11,7 +12,7 @@ const ProductComments = ({ productId }) => {
 
   const fetchComments = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/comentarios/${productId}`)
+      const res = await fetch(`${API_URL}/api/comentarios/${productId}`)
       const data = await res.json()
       setComments(Array.isArray(data) ? data : [])
     } catch (e) {
@@ -42,7 +43,7 @@ const ProductComments = ({ productId }) => {
         comentario: text.trim(),
         calificacion: Number(rating)
       }
-      const res = await fetch('http://localhost:5000/api/comentarios', {
+      const res = await fetch(`${API_URL}/api/comentarios`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)

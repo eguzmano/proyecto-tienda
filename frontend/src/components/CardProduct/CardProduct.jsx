@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import './CardProduct.css'
 import formatNumber from '../../utils/formatNumber'
 import capitalize from '../../utils/capitalize'
@@ -9,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import 'bootstrap-icons/font/bootstrap-icons.css'
+import { API_URL } from '../../config/env'
 
 const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
   const { addToCart } = useContext(CartContext)
@@ -49,7 +51,7 @@ const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
     })
     if (result.isConfirmed) {
       try {
-        await axios.delete(`http://localhost:5000/api/productos/${id}`)
+        await axios.delete(`${API_URL}/api/productos/${id}`)
         Swal.fire('Producto eliminado', '', 'success')
         if (onDelete) onDelete(id)
       } catch (error) {

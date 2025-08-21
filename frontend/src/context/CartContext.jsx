@@ -3,6 +3,7 @@ import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
 import { UserContext } from './UserContext'
 import { ProductContext } from './ProductsContext'
+import { API_URL } from '../config/env'
 
 export const CartContext = createContext()
 
@@ -33,7 +34,7 @@ const CartProvider = ({ children }) => {
     const fetchCart = async () => {
       if (user?.id && token && products.length > 0) {
         try {
-          const res = await fetch(`http://localhost:5000/api/clientes/${user.id}/carro`)
+          const res = await fetch(`${API_URL}/api/clientes/${user.id}/carro`)
           const data = await res.json()
           const cartMap = {}
           data.forEach(item => {
@@ -65,13 +66,15 @@ const CartProvider = ({ children }) => {
   const syncQuantity = async (productoId, delta) => {
     if (!user?.id) return
     try {
-      await fetch(`http://localhost:5000/api/clientes/${user.id}/carro/${productoId}`, {
+      const resp = await fetch(`${API_URL}/api/clientes/${user.id}/carro/${productoId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ delta })
       })
+      // si el backend respondió 404 (ya no existe) continuamos; otros errores se abortan
+      if (!resp.ok && resp.status !== 404) return
 
-      const res = await fetch(`http://localhost:5000/api/clientes/${user.id}/carro`)
+      const res = await fetch(`${API_URL}/api/clientes/${user.id}/carro`)
       const data = await res.json()
 
       // FIX: acumular cantidades cuando hay múltiples filas del mismo producto
@@ -100,6 +103,12 @@ const CartProvider = ({ children }) => {
   }
 
   const decreaseQuantity = (id) => {
+    // si la cantidad actual es 1, eliminamos la línea
+    const item = cart.find(p => Number(p.id) === Number(id))
+    if (!item) return
+    if (item.count <= 1) {
+      return removeAll(id)
+    }
     return syncQuantity(id, -1)
   }
 
@@ -148,14 +157,14 @@ const CartProvider = ({ children }) => {
 
     try {
       // 2) Persistir en backend (+1 siempre)
-      await fetch(`http://localhost:5000/api/clientes/${user.id}/carro`, {
+      await fetch(`${API_URL}/api/clientes/${user.id}/carro`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ producto_id: product.id, cantidad: 1 })
       })
 
       // 3) Re-sincronizar con backend para reflejar el estado real
-      const res = await fetch(`http://localhost:5000/api/clientes/${user.id}/carro`)
+      const res = await fetch(`${API_URL}/api/clientes/${user.id}/carro`)
       const data = await res.json()
       const cartMap = {}
       data.forEach(item => {
@@ -196,24 +205,28 @@ const CartProvider = ({ children }) => {
 
   const removeAll = async (id) => {
     if (!user?.id) return
-    await fetch(`http://localhost:5000/api/clientes/${user.id}/carro/${id}`, {
+    await fetch(`${API_URL}/api/clientes/${user.id}/carro/${id}`, {
       method: 'DELETE'
     })
     setCart(prevCart => prevCart.filter(p => p.id !== id))
   }
 
-  const clearCart = async () => {
-    if (user?.id && cart.length > 0) {
-      await Promise.all(
-        cart.map(item =>
-          fetch(`http://localhost:5000/api/clientes/${user.id}/carro/${item.id}`, {
-            method: 'DELETE'
-          })
+  const clearCart = async ({ skipApi = false } = {}) => {
+    try {
+      if (!skipApi && user?.id && cart.length > 0) {
+        await Promise.all(
+          cart.map(item =>
+            fetch(`${API_URL}/api/clientes/${user.id}/carro/${item.id}`, {
+              method: 'DELETE'
+            })
+              .then(() => {})
+              .catch(() => {}) // ignora errores/404
+          )
         )
-      )
+      }
+    } finally {
+      setCart([]) // asegura limpiar UI siempre
     }
-    setCart([])
-    setTotal(0)
   }
 
   const globalState = useMemo(() => ({

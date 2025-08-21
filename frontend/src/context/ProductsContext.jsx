@@ -1,4 +1,5 @@
 import { createContext, useEffect, useMemo, useState, useCallback } from 'react'
+import { API_URL } from '../config/env'
 
 export const ProductContext = createContext()
 
@@ -8,7 +9,7 @@ const ProductProvider = ({ children }) => {
 
   const fetchProducts = useCallback(async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/productos')
+      const res = await fetch(`${API_URL}/api/productos`)
       const data = await res.json()
       setProducts((data.productos || []).map(p => ({ ...p, precio: Number(p.precio) })))
     } catch (error) {
@@ -18,7 +19,7 @@ const ProductProvider = ({ children }) => {
 
   const fetchProduct = useCallback(async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/productos/${id}`)
+      const res = await fetch(`${API_URL}/api/productos/${id}`)
       const data = await res.json()
       setProduct(data.producto ? { ...data.producto, precio: Number(data.producto.precio) } : null)
     } catch (error) {

@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import 'sweetalert2/dist/sweetalert2.min.css'
+import { API_URL } from '../config/env'
 
 const swalOptions = {
   toast: true,
@@ -52,7 +53,7 @@ const UserProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/login', { email, password })
+      const { data } = await axios.post(`${API_URL}/api/auth/login`, { email, password })
       if (data?.token) {
         setToken(data.token)
         localStorage.setItem('token', data.token)
@@ -80,7 +81,7 @@ const UserProvider = ({ children }) => {
 
   const registerCliente = async (userData) => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/register', userData)
+      const { data } = await axios.post(`${API_URL}/api/auth/register`, userData)
       authResponse(data, '/')
     } catch (error) {
       Swal.fire({
@@ -92,7 +93,7 @@ const UserProvider = ({ children }) => {
   }
   const registerAdmin = async (userData) => {
     try {
-      const { data } = await axios.post('http://localhost:5000/api/auth/register/admin', userData)
+      const { data } = await axios.post(`${API_URL}/api/auth/register/admin`, userData)
       authResponse(data, '/')
     } catch (error) {
       Swal.fire({
@@ -105,7 +106,7 @@ const UserProvider = ({ children }) => {
 
   const getProfile = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/user/me', {
+      const { data } = await axios.get(`${API_URL}/api/user/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       setUser(data)

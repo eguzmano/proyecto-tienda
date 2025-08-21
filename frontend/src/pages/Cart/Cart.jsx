@@ -6,39 +6,40 @@ import { CartContext } from '../../context/CartContext'
 import { UserContext } from '../../context/UserContext'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import { API_URL } from '../../config/env'
 
 const Cart = () => {
   const { cart, total, increaseQuantity, decreaseQuantity, removeAll, clearCart } = useContext(CartContext)
-  const { token } = useContext(UserContext)
+  const { token, user } = useContext(UserContext)
 
   const handleSubmit = async (e) => {
     if (e) {
       e.preventDefault()
     }
     try {
-      const headers = {
-        Authorization: `Bearer ${token}`
-      }
-      const resCheckout = await axios.post('http://localhost:5000/api/checkouts', { items: cart }, { headers })
-      const checkoutData = resCheckout.data
-      console.log('Respuesta del Backend:', checkoutData)
-      console.log('Detalle del pedido:', checkoutData.cart.items)
+      // Consumir backend: POST /api/checkout/:clienteId
+      const url = `${API_URL}/api/checkout/${user.id}`
+      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {}
+      const { data } = await axios.post(url, {}, config)
+      const venta = data?.venta
+      console.log('Checkout OK:', venta)
 
       Swal.fire({
         icon: 'success',
-        title: '!Felicidades eres el cliente N° 1!',
-        text: '¡Tu pedido sera gratuito!',
+        title: '¡Pago exitoso!',
+        text: `N° de venta: ${venta?.id || '-'} — Total: $${formatNumber(venta?.total || total)}`,
         timer: 4500,
         showConfirmButton: true
       })
 
-      clearCart()
+      // El backend ya vació el carro: limpia solo el estado local
+      clearCart({ skipApi: true })
     } catch (error) {
       console.error(error)
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: '❌ Error al procesar el pago',
+        text: error?.response?.data?.error || '❌ Error al procesar el pago',
         timer: 2500,
         showConfirmButton: false
       })
