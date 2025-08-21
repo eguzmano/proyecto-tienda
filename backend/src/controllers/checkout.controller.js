@@ -1,4 +1,3 @@
-// controllers/checkout.controller.js
 import pool from "../../db/config.js";
 
 export const checkoutController = async (req, res) => {
