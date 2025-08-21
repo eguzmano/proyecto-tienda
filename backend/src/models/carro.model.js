@@ -55,7 +55,11 @@ export const patchCarroItem = async (clienteId, productoId, delta = 1) => {
 // Agregar item al carro
 export const addItemCarroModel = async (clienteId, productoId, cantidad) => {
     const sqlQuery = {
-        text: "INSERT INTO carros (cliente_id, producto_id, cantidad) VALUES ($1, $2, $3) RETURNING *",
+        text: `INSERT INTO carros (cliente_id, producto_id, cantidad) 
+               VALUES ($1, $2, $3)
+               ON CONFLICT (cliente_id, producto_id)
+               DO UPDATE SET cantidad = carros.cantidad + EXCLUDED.cantidad
+               RETURNING *`,
         values: [clienteId, productoId, cantidad]
     };
     const response = await pool.query(sqlQuery)

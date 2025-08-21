@@ -8,7 +8,8 @@ import usuariosRouter from './routes/clientes.route.js'
 import categoriaRoute from "./routes/categoria.route.js"
 
 import productoRoute from "./routes/producto.route.js";
-import cometarioRoute from "./routes/comentario.route.js";
+import ventaRoute from "./routes/venta.route.js";
+import comentarioRoute from "./routes/comentario.route.js";
 import carroRoute from "./routes/carro.route.js"
 import favoritoRoute from "./routes/favorito.route.js"
 
@@ -32,8 +33,13 @@ app.use("/api", carroRoute)
 //favoritos
 app.use("/api", favoritoRoute)
 
+//Ventas
+app.use("/api/ventas", ventaRoute); 
+
+//Productos
 app.use("/api/productos", productoRoute); 
-app.use("/api/comentarios", cometarioRoute);
+
+app.use("/api/comentarios", comentarioRoute);
 app.use((_, res) => {
   res.status(404).json({ error: "Not Found" });
 });

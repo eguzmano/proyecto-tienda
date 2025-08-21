@@ -77,13 +77,18 @@ CREATE TABLE "favoritos" (
     FOREIGN KEY ("producto_id") REFERENCES "productos" ("id") ON DELETE CASCADE
 );
 
-CREATE TABLE "carros" (
-  "id" SERIAL PRIMARY KEY,
-  "cliente_id" integer,
-  "producto_id" integer,
-  "cantidad" integer,
+-- Crear tabla con unicidad y validaciones
+CREATE TABLE carros (
+  "id"           SERIAL PRIMARY KEY,
+  "cliente_id"   INTEGER NOT NULL,
+  "producto_id"  INTEGER NOT NULL,
+  "cantidad"     INTEGER NOT NULL DEFAULT 1,
   CONSTRAINT "fk_carros_cliente"
     FOREIGN KEY ("cliente_id") REFERENCES "clientes" ("id") ON DELETE CASCADE,
   CONSTRAINT "fk_carros_producto"
-    FOREIGN KEY ("producto_id") REFERENCES "productos" ("id") ON DELETE CASCADE
+    FOREIGN KEY ("producto_id") REFERENCES "productos" ("id") ON DELETE CASCADE,
+  -- Unicidad: un producto por cliente en una sola fila
+  CONSTRAINT "carros_cliente_producto_uk" UNIQUE ("cliente_id", "producto_id"),
+  -- Cantidad mínima válida
+  CONSTRAINT "carros_cantidad_chk" CHECK ("cantidad" >= 1)
 );
