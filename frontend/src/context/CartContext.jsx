@@ -73,16 +73,22 @@ const CartProvider = ({ children }) => {
 
       const res = await fetch(`http://localhost:5000/api/clientes/${user.id}/carro`)
       const data = await res.json()
+
+      // FIX: acumular cantidades cuando hay múltiples filas del mismo producto
       const cartMap = {}
       data.forEach(item => {
         const prod = products.find(p => Number(p.id) === Number(item.producto_id))
         if (!prod) return
-        cartMap[item.producto_id] = {
-          id: item.producto_id,
-          count: item.cantidad,
-          nombre: prod.nombre,
-          precio: Number(prod.precio),
-          imagen_url: prod.imagen_url
+        if (!cartMap[item.producto_id]) {
+          cartMap[item.producto_id] = {
+            id: item.producto_id,
+            count: item.cantidad,
+            nombre: prod.nombre,
+            precio: Number(prod.precio),
+            imagen_url: prod.imagen_url
+          }
+        } else {
+          cartMap[item.producto_id].count += item.cantidad
         }
       })
       setCart(Object.values(cartMap))
@@ -118,19 +124,37 @@ const CartProvider = ({ children }) => {
       return
     }
 
+    // 1) Actualización optimista en memoria
+    const exists = cart.some(p => Number(p.id) === Number(product.id))
+    setCart(prevCart => {
+      if (exists) {
+        Swal.fire({
+          ...swalOptions,
+          icon: 'info',
+          title: `Se agregó ${product.nombre} al carrito`
+        })
+        return prevCart.map(p =>
+          Number(p.id) === Number(product.id) ? { ...p, count: p.count + 1 } : p
+        )
+      } else {
+        Swal.fire({
+          ...swalOptions,
+          icon: 'success',
+          title: `${product.nombre} añadida al carrito 🛒`
+        })
+        return [...prevCart, { ...product, count: 1 }]
+      }
+    })
+
     try {
+      // 2) Persistir en backend (+1 siempre)
       await fetch(`http://localhost:5000/api/clientes/${user.id}/carro`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ producto_id: product.id, cantidad: 1 })
       })
 
-      Swal.fire({
-        ...swalOptions,
-        icon: 'success',
-        title: `${product.nombre} añadida al carrito 🛒`
-      })
-
+      // 3) Re-sincronizar con backend para reflejar el estado real
       const res = await fetch(`http://localhost:5000/api/clientes/${user.id}/carro`)
       const data = await res.json()
       const cartMap = {}
@@ -151,6 +175,17 @@ const CartProvider = ({ children }) => {
       })
       setCart(Object.values(cartMap))
     } catch (error) {
+      // Rollback simple si falla el backend
+      setCart(prev => {
+        const current = prev.find(p => Number(p.id) === Number(product.id))
+        if (!current) return prev
+        if (current.count > 1) {
+          return prev.map(p =>
+            Number(p.id) === Number(product.id) ? { ...p, count: p.count - 1 } : p
+          )
+        }
+        return prev.filter(p => Number(p.id) !== Number(product.id))
+      })
       Swal.fire({
         ...swalOptions,
         icon: 'error',

@@ -104,22 +104,23 @@
   text-align: center;
 }
 
-.form-label {
-  color: #8c7c6e; /* Gris cálido */
+/* Limitar estilos SOLO al perfil para no afectar el navbar ni otros formularios */
+.profile-content .form-label {
+  color: #8c7c6e;
   font-weight: 500;
 }
 
-.form-control {
+.profile-content .form-control {
   border-radius: 12px;
-  border: 1px solid #fff4cc; /* Amarillo pálido */
+  border: 1px solid #fff4cc;
   font-size: 1rem;
   padding: 0.6rem 0.75rem;
-  background-color: #f7ede2; /* Rosa pastel */
-  color: #5e4631; /* Marrón suave */
+  background-color: #f7ede2;
+  color: #5e4631;
   margin-bottom: 18px;
 }
 
-.form-control:focus {
+.profile-content .form-control:focus {
   border-color: #d6eadf; /* Verde menta */
   box-shadow: 0 0 0 0.15rem rgba(214,234,223,0.25);
   outline: none;

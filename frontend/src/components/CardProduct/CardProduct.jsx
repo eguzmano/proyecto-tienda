@@ -87,7 +87,15 @@ const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
           <i className='bi bi-pencil-square' />
         </button>
       )}
-      <img src={imagen_url} className='card-img-top' alt={nombre} />
+      <img
+        src={imagen_url}
+        className='card-img-top product-link'
+        alt={nombre}
+        role='button'
+        tabIndex={0}
+        onClick={() => navigate(`/productos/${id}`)}
+        onKeyDown={(e) => e.key === 'Enter' && navigate(`/productos/${id}`)}
+      />
       <div className='card-body d-flex flex-column'>
         <ul className='list-group list-group-flush'>
           <li className='list-group-item fs-4'>{capitalize(nombre)}</li>
