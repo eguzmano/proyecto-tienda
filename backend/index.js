@@ -2,11 +2,11 @@ import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import { cuncunaLogs } from './middlewares/log.middleware.js'
-
+import checkoutRoutes from "./routes/checkout.route.js";
 import authRoute from "./routes/auth.route.js";
 import usuariosRouter from './routes/clientes.route.js'
 import categoriaRoute from "./routes/categoria.route.js"
-
+import detalleVentaRoute from "./routes/detalle_venta.route.js"
 import productoRoute from "./routes/producto.route.js";
 import ventaRoute from "./routes/venta.route.js";
 import comentarioRoute from "./routes/comentario.route.js";
@@ -39,7 +39,16 @@ app.use("/api/ventas", ventaRoute);
 //Productos
 app.use("/api/productos", productoRoute); 
 
+//Comentarios
 app.use("/api/comentarios", comentarioRoute);
+
+//Detalle venta
+app.use("/api/detalleVenta", detalleVentaRoute)
+
+// Checkout
+app.use("/api", checkoutRoutes);
+
+
 app.use((_, res) => {
   res.status(404).json({ error: "Not Found" });
 });
