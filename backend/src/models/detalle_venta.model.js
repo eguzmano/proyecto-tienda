@@ -6,13 +6,13 @@ export const getDetalleVentas = async () => {
   return response.rows
 };
 
-export const getDetalleVenta = async (id) => {
+export const getDetalleVenta = async (ventaId) => {
   const SQLquery = {
-    text: 'SELECT * FROM detalle_venta WHERE id=$1',
-    values: [id]
+    text: 'SELECT * FROM detalle_venta WHERE venta_id=$1',
+    values: [ventaId]
   }
   const response = await pool.query(SQLquery)
-  return response.rows[0]
+  return response.rows
 };
 
 export const createDetalleVentasModel = async (venta_id, producto_id , cantidad , precio_unitario) => {
