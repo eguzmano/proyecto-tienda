@@ -2,10 +2,10 @@ import pg from 'pg'
 import 'dotenv/config'
 
 
-const { DATABASE_URL } = process.env
+const { DB_URL } = process.env
 
 const pool = new pg.Pool({
-  connectionString: DATABASE_URL,
+  connectionString: DB_URL,
   ssl: { rejectUnauthorized: false }, // Supabase requiere SSL
   allowExitOnIdle: true
 })
