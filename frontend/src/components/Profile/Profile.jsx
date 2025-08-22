@@ -92,21 +92,29 @@ const Profile = () => {
       setDetailsLoading(true)
       setDetailsError(null)
       setSelectedOrder(ventaId)
-      // Usa el endpoint existente de detalle_venta
+
       const res = await fetch(`${API_URL}/api/detalleVenta/${ventaId}`)
       if (!res.ok) throw new Error('No se pudo obtener el detalle de la compra')
       const data = await res.json()
-      // El controlador puede responder { producto } o { productos } o un array
-      const raw = Array.isArray(data)
-        ? data
-        : Array.isArray(data.productos)
-          ? data.productos
-          : data.producto ? [data.producto] : []
-      // Enriquecer con nombre e imagen desde catálogo
+
+      // Normalizar respuesta
+      let raw = []
+      if (Array.isArray(data.productos)) {
+        raw = data.productos
+      } else if (Array.isArray(data.producto)) {
+        // ← Aquí estaba el problema: data.producto ya es un array
+        raw = data.producto
+      } else if (Array.isArray(data)) {
+        raw = data
+      } else if (data.producto) {
+        raw = [data.producto]
+      }
+
+      // Enriquecer
       const parsed = raw.map(d => {
         const prod = products.find(p => Number(p.id) === Number(d.producto_id)) || {}
-        const cantidad = Number(d.cantidad || d.qty || 0)
-        const precio = Number(d.precio_unitario || d.precio || prod.precio || 0)
+        const cantidad = Number(d.cantidad) || 0
+        const precio = Number(d.precio_unitario ?? prod.precio ?? 0)
         return {
           ...d,
           nombre: prod.nombre || `Producto #${d.producto_id}`,
