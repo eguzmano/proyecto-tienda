@@ -27,3 +27,12 @@ export const findClienteByEmailModel = async (email) => {
     const response = await pool.query(SQLquery);
     return response.rows[0];
 }
+
+export const deleteClienteModel = async (id) => {
+  const SQLquery = {
+    text: 'DELETE FROM CLIENTES WHERE id = $1',
+    values: [id]
+  }
+  const result = await pool.query(SQLquery)
+  return result.rowCount
+}

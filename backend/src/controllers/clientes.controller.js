@@ -1,4 +1,4 @@
-import { createClienteModel, findClienteByEmailModel } from "../models/clientes.model.js";
+import { createClienteModel, deleteClienteModel, findClienteByEmailModel } from "../models/clientes.model.js";
 import jwt from 'jsonwebtoken'
 
 
@@ -73,5 +73,31 @@ export const registerAdmin = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: 'Error interno al registrar admin' });
+  }
+};
+
+export const deleteCliente = async (req, res) => {
+  try {
+    const id = Number(req.params.id);
+    if (Number.isNaN(id)) {
+      return res.status(400).json({ error: 'ID inválido' });
+    }
+
+    const rowCount = await deleteClienteModel(id);
+
+    if (rowCount === 0) {
+      return res.status(404).json({ error: 'Cliente no encontrado' });
+    }
+
+    // Éxito: sin contenido
+    return res.status(204).send();
+  } catch (error) {
+    // FK constraint -> hay registros asociados (comentarios, ventas, etc.)
+    if (error.code === '23503') {
+      return res.status(409).json({
+        error: 'No se puede eliminar el Cliente porque tiene registros asociados.'
+      });
+    }
+    return res.status(500).json({ error: 'Error al procesar la solicitud', detail: error.message });
   }
 };
