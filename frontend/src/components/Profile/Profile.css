@@ -21,39 +21,13 @@
   box-shadow: 0 1px 4px rgba(90,70,54,0.06);
 }
 
-.profile-image-wrapper {
-  position: relative;
-  margin-bottom: 24px;
-}
-
-.profile-image {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid #fff4cc; /* Amarillo pálido */
-  background: #fff4cc;
-}
-
-.edit-icon {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: #d6eadf; /* Rosa pastel */
-  border-radius: 50%;
-  padding: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
-  border: 2px solid #d6eadf; /* Verde menta */
-}
-.edit-icon:hover {
-  background: #b5dac5; /* Verde menta */
-}
 
 .profile-menu {
   width: 100%;
   display: flex;
+  height:100%;
   flex-direction: column;
+  justify-content: center;
   align-items: stretch;
 }
 
@@ -99,12 +73,11 @@
 }
 
 .profile-title {
-  color: #5e4631; /* Marrón suave */
+  color: #5e4631;
   font-weight: 700;
   text-align: center;
 }
 
-/* Limitar estilos SOLO al perfil para no afectar el navbar ni otros formularios */
 .profile-content .form-label {
   color: #8c7c6e;
   font-weight: 500;
@@ -126,59 +99,3 @@
   outline: none;
 }
 
-.logout-btn {
-  border-radius: 8px;
-  font-weight: 600;
-  background: #5e4631; /* Marrón suave */
-  color: #fff;
-  border: none;
-  padding: 0.7rem 0;
-  width: 100%;
-  margin-top: 18px;
-  font-size: 1.1rem;
-  transition: background 0.2s;
-}
-.logout-btn:hover {
-  background: #8c7c6e; /* Gris cálido */
-}
-
-.custom-modal-popup {
-  background: #fdf6ec; /* Beige claro */
-  border-radius: 18px;
-}
-
-.custom-modal-title {
-  color: #5e4631; /* Marrón suave */
-  font-weight: 700;
-}
-
-.custom-modal-confirm {
-  background: #a67c6b; /* Marrón suave */
-  color: #fff;
-  border-radius: 10px;
-  font-weight: 600;
-  border: none;
-}
-
-
-.custom-modal-cancel {
-  background: #a67c6b;
-  color: #fff;
-  border: 1.5px solid #a67c6b;
-  border-radius: 10px;
-  font-weight: 600;
-}
-
-.custom-modal-confirm:hover,
-.custom-modal-cancel:hover {
-  background: #8e695b; /* Rosa pastel */
-  color: #fff;
-  border-color: #8e695b;
-}
-
-.custom-modal-input {
-  background: #fff;
-  color: #5e4631;
-  border-radius: 10px;
-  border: 1px solid #e2d6c3;
-}

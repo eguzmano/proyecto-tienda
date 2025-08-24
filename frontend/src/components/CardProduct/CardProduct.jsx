@@ -1,4 +1,3 @@
-/* eslint-disable camelcase */
 import './CardProduct.css'
 import formatNumber from '../../utils/formatNumber'
 import capitalize from '../../utils/capitalize'
@@ -7,16 +6,16 @@ import { CartContext } from '../../context/CartContext'
 import { FavoritesContext } from '../../context/FavoritesContext'
 import { UserContext } from '../../context/UserContext'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
-import Swal from 'sweetalert2'
+import { ProductContext } from '../../context/ProductsContext'
+import { toastSuccess, toastError, modalConfirm } from '../../utils/toast'
 import 'bootstrap-icons/font/bootstrap-icons.css'
-import { API_URL } from '../../config/env'
 
 const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
   const { addToCart } = useContext(CartContext)
-  const { addFavorite, removeFavorite, favorites } = useContext(FavoritesContext)
+  const { favorites, toggleFavorite } = useContext(FavoritesContext)
   const { user } = useContext(UserContext)
   const navigate = useNavigate()
+  const { deleteProduct } = useContext(ProductContext)
   const [loadingFav, setLoadingFav] = useState(false)
   const isFav = favorites.some(f => Number(f.producto_id) === Number(id))
 
@@ -24,42 +23,31 @@ const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
     if (loadingFav) return
     setLoadingFav(true)
     try {
-      if (isFav) {
-        const ok = await removeFavorite(id)
-        if (ok) {
-          Swal.fire('Eliminado de favoritos', '', 'success')
-        }
-      } else {
-        await addFavorite(id)
-        Swal.fire('Agregado a favoritos', '', 'success')
-      }
+      const result = await toggleFavorite(id)
+      if (result && !isFav) toastSuccess('Agregado a favoritos')
+      else if (isFav && result) toastSuccess('Eliminado de favoritos')
+      else if (!result) toastError('Error al actualizar favoritos')
     } catch (error) {
-      Swal.fire('Error al actualizar favoritos', '', 'error')
+      if (process.env.NODE_ENV !== 'production') console.error('Fav error', error)
+      toastError('Error al actualizar favoritos')
     } finally {
       setLoadingFav(false)
     }
   }
 
   const handleDelete = async () => {
-    const result = await Swal.fire({
-      title: '¿Eliminar producto?',
-      text: 'Esta acción no se puede deshacer.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    })
+    const result = await modalConfirm({ title: '¿Eliminar producto?', text: 'Esta acción no se puede deshacer.' })
     if (result.isConfirmed) {
       try {
-        await axios.delete(`${API_URL}/api/productos/${id}`)
-        Swal.fire('Producto eliminado', '', 'success')
+        await deleteProduct(id)
+        toastSuccess('Producto eliminado')
         if (onDelete) onDelete(id)
       } catch (error) {
-        Swal.fire('Error al eliminar', '', 'error')
+        console.error('Delete product error', error)
+        toastError('Error al eliminar')
       }
     }
   }
-
   return (
     <div className='card mx-3 my-3 card-product' style={{ position: 'relative' }}>
       {user?.rol_id === 2 && (
@@ -89,15 +77,13 @@ const CardProduct = ({ nombre, precio, imagen_url, id, onDelete }) => {
           <i className='bi bi-pencil-square' />
         </button>
       )}
-      <img
-        src={imagen_url}
-        className='card-img-top product-link'
-        alt={nombre}
-        role='button'
-        tabIndex={0}
-        onClick={() => navigate(`/productos/${id}`)}
-        onKeyDown={(e) => e.key === 'Enter' && navigate(`/productos/${id}`)}
-      />
+      <button type='button' className='p-0 border-0 bg-transparent' onClick={() => navigate(`/productos/${id}`)}>
+        <img
+          src={imagen_url}
+          className='card-img-top product-link'
+          alt={nombre}
+        />
+      </button>
       <div className='card-body d-flex flex-column'>
         <ul className='list-group list-group-flush'>
           <li className='list-group-item fs-4'>{capitalize(nombre)}</li>

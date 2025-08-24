@@ -1,8 +1,6 @@
-/* eslint-disable camelcase */
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState, useMemo } from 'react'
 import { UserContext } from './UserContext'
-import axios from 'axios'
-import { API_URL } from '../config/env'
+import api from '../api/api'
 
 export const FavoritesContext = createContext()
 
@@ -12,25 +10,23 @@ const FavoritesProvider = ({ children }) => {
 
   const fetchFavorites = async () => {
     if (!user?.id) return setFavorites([])
-    const { data } = await axios.get(`${API_URL}/api/favoritos/${user.id}`)
+    const { data } = await api.get(`/api/favoritos/${user.id}`)
     setFavorites(data.favoritos || [])
   }
 
-  // producto_id: viene así desde la API; mantenemos la clave para compatibilidad
   const addFavorite = async (producto_id) => {
     if (!user?.id) return
-    await axios.post(`${API_URL}/api/favoritos`, { cliente_id: user.id, producto_id })
-    await fetchFavorites() // <-- espera a que termine antes de continuar
+    await api.post('/api/favoritos', { cliente_id: user.id, producto_id })
+    await fetchFavorites()
   }
 
   const removeFavorite = async (productoId) => {
     if (!user?.id) return false
     const favorito = favorites.find(f => Number(f.producto_id) === Number(productoId))
     if (!favorito) return false
-    // Optimista: quita del estado inmediato
     setFavorites(prev => prev.filter(f => f.id !== favorito.id))
     try {
-      await axios.delete(`${API_URL}/api/favoritos/${favorito.id}`)
+      await api.delete(`/api/favoritos/${favorito.id}`)
       return true
     } catch (error) {
       console.error('Error al eliminar favorito:', error)
@@ -41,15 +37,30 @@ const FavoritesProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    if (user && user.id) {
+    if (user?.id) {
       fetchFavorites()
     } else {
       setFavorites([])
     }
   }, [user])
 
+  const toggleFavorite = async (productoId) => {
+    const isFav = favorites.some(f => Number(f.producto_id) === Number(productoId))
+    if (isFav) return removeFavorite(productoId)
+    await addFavorite(productoId)
+    return true
+  }
+
+  const value = useMemo(() => ({
+    favorites,
+    addFavorite,
+    removeFavorite,
+    fetchFavorites,
+    toggleFavorite
+  }), [favorites])
+
   return (
-    <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite, fetchFavorites }}>
+    <FavoritesContext.Provider value={value}>
       {children}
     </FavoritesContext.Provider>
   )

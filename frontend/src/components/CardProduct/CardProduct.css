@@ -46,7 +46,7 @@
 }
 
 .card-icon-btn.favorite {
-  color: #bbb;
+  color: red;
   font-size: 2.3rem;
   position: absolute;
   top: 15px;

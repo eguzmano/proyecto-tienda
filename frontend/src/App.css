@@ -34,3 +34,49 @@
   font-size: 1.1rem;
   letter-spacing: 1px;
 }
+
+/* Modal confirm personalizado */
+.swal2-custom-modal {
+  background: #ffffff !important;
+  border: 2px solid #e8dccf !important;
+  box-shadow: 0 8px 28px rgba(94,70,49,0.18) !important;
+  border-radius: 18px !important;
+  padding: 2.5rem 2rem !important;
+  font-family: 'Quicksand','Nunito',sans-serif;
+}
+.swal2-custom-modal-title {
+  color: #5E4631 !important;
+  font-size: 1.85rem !important;
+  font-weight: 700 !important;
+  letter-spacing: .5px;
+  margin-bottom: .75rem !important;
+}
+.swal2-custom-modal-text {
+  color: #6d5440 !important;
+  font-size: 1.05rem !important;
+  line-height: 1.45;
+  margin-top: .25rem !important;
+  margin-bottom: 1.25rem !important;
+}
+.swal2-btn-confirm, .swal2-btn-cancel {
+  --btn-color: #5E4631;
+  background: var(--btn-color) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 30px !important;
+  padding: .75rem 1.75rem !important;
+  font-size: .95rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin: 0 .4rem !important;
+  transition: transform .2s, filter .2s;
+}
+.swal2-btn-cancel { background: #c9b8a8 !important; color: #3e3125 !important; }
+.swal2-btn-confirm:hover, .swal2-btn-cancel:hover { transform: translateY(-2px); filter: brightness(1.05); }
+.swal2-btn-confirm:active, .swal2-btn-cancel:active { transform: translateY(0); }
+
+@media (max-width: 600px) {
+  .swal2-custom-modal { width: 95% !important; padding: 2rem 1.25rem !important; }
+  .swal2-custom-modal-title { font-size: 1.55rem !important; }
+}

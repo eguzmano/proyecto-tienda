@@ -4,59 +4,21 @@ import './Cart.css'
 import { useContext } from 'react'
 import { CartContext } from '../../context/CartContext'
 import { UserContext } from '../../context/UserContext'
-import axios from 'axios'
-import Swal from 'sweetalert2'
-import { API_URL } from '../../config/env'
+import { toastWarning, toastSuccess, toastError } from '../../utils/toast'
 
 const Cart = () => {
-  const { cart, total, increaseQuantity, decreaseQuantity, removeAll, clearCart } = useContext(CartContext)
-  const { token, user } = useContext(UserContext)
+  const { cart, total, increaseQuantity, decreaseQuantity, removeAll, clearCart, checkout, checkingOut } = useContext(CartContext)
+  const { token } = useContext(UserContext)
 
-  const handleSubmit = async (e) => {
-    if (e) {
-      e.preventDefault()
-    }
+  const pay = async () => {
+    if (total <= 0) { toastWarning('⚠️ El carrito está vacío'); return }
     try {
-      // Consumir backend: POST /api/checkout/:clienteId
-      const url = `${API_URL}/api/checkout/${user.id}`
-      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {}
-      const { data } = await axios.post(url, {}, config)
-      const venta = data?.venta
-      console.log('Checkout OK:', venta)
-
-      Swal.fire({
-        icon: 'success',
-        title: '¡Pago exitoso!',
-        text: `N° de venta: ${venta?.id || '-'} — Total: $${formatNumber(venta?.total || total)}`,
-        timer: 4500,
-        showConfirmButton: true
-      })
-
-      // El backend ya vació el carro: limpia solo el estado local
-      clearCart({ skipApi: true })
+      const venta = await checkout()
+      if (!venta) return
+      toastSuccess(`¡Pago exitoso! Venta #${venta?.id || '-'} Total: $${formatNumber(venta?.total || total)}`, 3500)
     } catch (error) {
-      console.error(error)
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: error?.response?.data?.error || '❌ Error al procesar el pago',
-        timer: 2500,
-        showConfirmButton: false
-      })
-    }
-  }
-
-  const pay = () => {
-    if (total > 0) {
-      handleSubmit()
-    } else {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Carrito vacío',
-        text: '⚠️ El carrito está vacío',
-        timer: 2000,
-        showConfirmButton: false
-      })
+      const msg = error?.response?.data?.error || error.message || '❌ Error al procesar el pago'
+      toastError(msg)
     }
   }
 
@@ -123,9 +85,9 @@ const Cart = () => {
               <button
                 className='btn btn-dark px-5 align-self-center'
                 onClick={pay}
-                disabled={!token}
+                disabled={!token || checkingOut}
               >
-                Pagar
+                {checkingOut ? 'Procesando...' : 'Pagar'}
               </button>
             </>)
           : null}

@@ -57,7 +57,6 @@ const StoreBreadcrumb = () => {
         {pathnames.map((name, index) => {
           const routeTo = `/${pathnames.slice(0, index + 1).join('/')}`
           const isLast = index === pathnames.length - 1
-          // Si el último segmento es un ID de producto, muestra su nombre
           const displayName = (isLast && isProductRoute && !Number.isNaN(Number(name)))
             ? (currentProductName || '...')
             : (nameMap[name] || decodeURIComponent(name))

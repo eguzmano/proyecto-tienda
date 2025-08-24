@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react'
-import Swal from 'sweetalert2'
+import { toastWarning, toastInfo, toastSuccess, toastError } from '../../utils/toast'
 import { UserContext } from '../../context/UserContext'
-import { API_URL } from '../../config/env'
+import api from '../../api/api'
 
 const ProductComments = ({ productId }) => {
   const [comments, setComments] = useState([])
@@ -12,10 +12,10 @@ const ProductComments = ({ productId }) => {
 
   const fetchComments = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/comentarios/${productId}`)
-      const data = await res.json()
+      const { data } = await api.get(`/api/comentarios/${productId}`)
       setComments(Array.isArray(data) ? data : [])
     } catch (e) {
+      if (process.env.NODE_ENV !== 'production') console.error('Error cargando comentarios', e)
       setComments([])
     } finally {
       setLoading(false)
@@ -29,11 +29,11 @@ const ProductComments = ({ productId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!user?.id) {
-      Swal.fire('Debes iniciar sesión para comentar', '', 'warning')
+      toastWarning('Debes iniciar sesión para comentar')
       return
     }
     if (!text.trim()) {
-      Swal.fire('Escribe un comentario', '', 'info')
+      toastInfo('Escribe un comentario')
       return
     }
     try {
@@ -43,48 +43,40 @@ const ProductComments = ({ productId }) => {
         comentario: text.trim(),
         calificacion: Number(rating)
       }
-      const res = await fetch(`${API_URL}/api/comentarios`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      })
-      if (!res.ok) throw new Error('Error al crear comentario')
+      await api.post('/api/comentarios', body)
       setText('')
       setRating(5)
       await fetchComments()
-      Swal.fire('Comentario publicado', '', 'success')
+      toastSuccess('Comentario publicado')
     } catch (e) {
-      Swal.fire('No se pudo publicar el comentario', '', 'error')
+      if (process.env.NODE_ENV !== 'production') console.error('Error publicando comentario', e)
+      toastError('No se pudo publicar el comentario')
     }
   }
 
-  const renderStars = (n) => '★★★★★☆☆☆☆☆'.slice(5 - Math.min(5, Math.max(0, Number(n))), 10 - Math.min(5, Math.max(0, Number(n))))
-
+  const renderStars = (n) => '★★★★★☆☆☆☆☆'.slice(
+    5 - Math.min(5, Math.max(0, Number(n))),
+    10 - Math.min(5, Math.max(0, Number(n)))
+  )
   return (
     <div className='mt-4' style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'left' }}>
       <h4 className='mb-3'>Comentarios</h4>
 
-      {loading
-        ? (
-          <p>Cargando comentarios...</p>
-          )
-        : comments.length === 0
-          ? (
-            <p className='text-muted'>Aún no hay comentarios.</p>
-            )
-          : (
-            <ul className='list-group mb-4'>
-              {comments.map(c => (
-                <li key={c.id} className='list-group-item'>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <strong>{renderStars(c.calificacion)}</strong>
-                    <small className='text-muted'>{new Date(c.fecha).toLocaleString()}</small>
-                  </div>
-                  <div>{c.comentario}</div>
-                </li>
-              ))}
-            </ul>
-            )}
+      {loading && <p>Cargando comentarios...</p>}
+      {!loading && comments.length === 0 && <p className='text-muted'>Aún no hay comentarios.</p>}
+      {!loading && comments.length > 0 && (
+        <ul className='list-group mb-4'>
+          {comments.map(c => (
+            <li key={c.id} className='list-group-item'>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <strong>{renderStars(c.calificacion)}</strong>
+                <small className='text-muted'>{new Date(c.fecha).toLocaleString()}</small>
+              </div>
+              <div>{c.comentario}</div>
+            </li>
+          ))}
+        </ul>
+      )}
 
       {/* Formulario ancho: evitamos que se centre y forzamos que los campos se estiren */}
       <form
@@ -93,9 +85,10 @@ const ProductComments = ({ productId }) => {
         style={{ alignItems: 'stretch' }}
       >
         <div className='mb-2'>
-          <label className='form-label'>Calificación</label>
+          <label className='form-label' htmlFor='rating-select'>Calificación</label>
           <select
             className='form-select w-100'
+            id='rating-select'
             value={rating}
             onChange={(e) => setRating(Number(e.target.value))}
           >
@@ -107,10 +100,11 @@ const ProductComments = ({ productId }) => {
           </select>
         </div>
         <div className='mb-2'>
-          <label className='form-label'>Tu comentario</label>
+          <label className='form-label' htmlFor='comment-textarea'>Tu comentario</label>
           <textarea
             className='form-control w-100'
             rows={3}
+            id='comment-textarea'
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder='Escribe tu opinión del producto...'

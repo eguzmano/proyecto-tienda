@@ -2,9 +2,8 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useContext, useEffect, useState } from 'react'
 import { ProductContext } from '../../context/ProductsContext'
 import { NewProduct } from '../../components'
-import axios from 'axios'
-import Swal from 'sweetalert2'
-import { API_URL } from '../../config/env'
+import api from '../../api/api'
+import { toastSuccess, toastError } from '../../utils/toast'
 
 const EditProduct = () => {
   const { id } = useParams()
@@ -18,13 +17,13 @@ const EditProduct = () => {
 
   const handleUpdateProduct = async (payload) => {
     try {
-      const { data } = await axios.put(`${API_URL}/api/productos/${id}`, payload)
+      const { data } = await api.put(`/api/productos/${id}`, payload)
       const updated = data.producto || { ...payload, id }
       updateProduct(updated)
-      Swal.fire('¡Producto actualizado!', '', 'success')
+      toastSuccess('¡Producto actualizado!')
       navigate('/productos')
     } catch (error) {
-      Swal.fire('Error al actualizar producto', error?.response?.data?.error || '', 'error')
+      toastError(error?.response?.data?.error || 'Error al actualizar producto')
     }
   }
 

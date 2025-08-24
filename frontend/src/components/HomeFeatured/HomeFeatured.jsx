@@ -6,7 +6,7 @@ import { CartContext } from '../../context/CartContext'
 import formatNumber from '../../utils/formatNumber'
 import capitalize from '../../utils/capitalize'
 
-const FEATURED_IDS = [4, 5]
+const FEATURED_IDS = [5, 6]
 
 const HomeFeatured = () => {
   const { products } = useContext(ProductContext)

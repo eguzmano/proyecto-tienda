@@ -3,7 +3,6 @@ import Container from 'react-bootstrap/Container'
 import Form from 'react-bootstrap/Form'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
-import NavDropdown from 'react-bootstrap/NavDropdown'
 import Image from 'react-bootstrap/Image'
 import logo from '../../assets/imgs/logo.png'
 import './Navbar.css'
@@ -13,7 +12,7 @@ import { useContext, useState } from 'react'
 import { CartContext } from '../../context/CartContext'
 import { UserContext } from '../../context/UserContext'
 
-const StoreNavbar = ({ isTransparent }) => {
+const StoreNavbar = () => {
   const { total } = useContext(CartContext)
   const { token, logout, user } = useContext(UserContext)
   const [query, setQuery] = useState('')
@@ -26,8 +25,7 @@ const StoreNavbar = ({ isTransparent }) => {
   }
 
   return (
-    <Navbar expand='lg' className={`navbar ${isTransparent ? 'navbar-transparent' : ''}`}>
-      {/* TODO: implementar */}
+    <Navbar expand='lg' className='navbar'>
       <Container fluid className='mx-5'>
         <Navbar.Brand as={Link} to='/'><Image className='navbar-logo' src={logo} fluid /></Navbar.Brand>
         <Navbar.Toggle aria-controls='navbarScroll' />

@@ -4,7 +4,6 @@ import { UserContext } from '../context/UserContext'
 
 const PublicRoutes = () => {
   const { token } = useContext(UserContext)
-
   return token ? <Navigate to='/' /> : <Outlet />
 }
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Form, Button } from 'react-bootstrap'
-import Swal from 'sweetalert2'
+import { toastWarning } from '../../utils/toast'
 import { useNavigate } from 'react-router-dom'
 import './NewProduct.css'
 
@@ -46,7 +46,7 @@ const NewProduct = ({ initialProduct, onSubmit, editMode }) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!product.name || !product.description || !product.price || !product.stock || !product.category || !product.imageUrl) {
-      Swal.fire('Todos los campos son obligatorios', '', 'warning')
+      toastWarning('Todos los campos son obligatorios')
       return
     }
     const payload = {
@@ -62,7 +62,6 @@ const NewProduct = ({ initialProduct, onSubmit, editMode }) => {
     }
     await onSubmit(payload)
   }
-
   return (
     <Form className='product-form-container p-4 border rounded bg-light' onSubmit={handleSubmit}>
       <h4 className='mb-4'>{editMode ? 'Editar Producto' : 'Nuevo Producto'}</h4>

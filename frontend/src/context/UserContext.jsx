@@ -1,20 +1,7 @@
 import { createContext, useEffect, useMemo, useState } from 'react'
-import axios from 'axios'
+import api from '../api/api'
 import { useNavigate } from 'react-router-dom'
-import Swal from 'sweetalert2'
-import 'sweetalert2/dist/sweetalert2.min.css'
-import { API_URL } from '../config/env'
-
-const swalOptions = {
-  toast: true,
-  position: 'top-end',
-  showConfirmButton: false,
-  timer: 2000,
-  customClass: {
-    popup: 'custom-toast',
-    title: 'custom-title'
-  }
-}
+import { toastSuccess, toastError, toastWarning } from '../utils/toast'
 
 export const UserContext = createContext()
 
@@ -36,24 +23,16 @@ const UserProvider = ({ children }) => {
           rol_id: data.rol_id
         })
       }
-      Swal.fire({
-        ...swalOptions,
-        icon: 'success',
-        title: `✅ Bienvenido ${data.nombre || data.email}`
-      })
+      toastSuccess(`✅ Bienvenido ${data.nombre || data.email}`)
       navigate(redirectPath)
     } else {
-      Swal.fire({
-        ...swalOptions,
-        icon: 'error',
-        title: '❌ Credenciales incorrectas'
-      })
+      toastError('❌ Credenciales incorrectas')
     }
   }
 
   const login = async (email, password) => {
     try {
-      const { data } = await axios.post(`${API_URL}/api/auth/login`, { email, password })
+      const { data } = await api.post('/api/auth/login', { email, password })
       if (data?.token) {
         setToken(data.token)
         localStorage.setItem('token', data.token)
@@ -63,52 +42,37 @@ const UserProvider = ({ children }) => {
           nombre: data.nombre,
           rol_id: data.rol_id
         })
-        Swal.fire({
-          ...swalOptions,
-          icon: 'success',
-          title: `✅ Bienvenido ${data.nombre || data.email}`
-        })
+        toastSuccess(`✅ Bienvenido ${data.nombre || data.email}`)
         navigate('/perfil')
       }
     } catch (error) {
-      Swal.fire({
-        ...swalOptions,
-        icon: 'warning',
-        title: `⚠️ ${error?.response?.data?.message || 'Error al iniciar sesión'}`
-      })
+      console.error('Login error', error)
+      toastWarning(`⚠️ ${error?.response?.data?.message || 'Error al iniciar sesión'}`)
     }
   }
 
   const registerCliente = async (userData) => {
     try {
-      const { data } = await axios.post(`${API_URL}/api/auth/register`, userData)
+      const { data } = await api.post('/api/auth/register', userData)
       authResponse(data, '/')
     } catch (error) {
-      Swal.fire({
-        ...swalOptions,
-        icon: 'error',
-        title: `❌ ${error?.response?.data?.message || 'Error al registrar usuario'}`
-      })
+      console.error('Register cliente error', error)
+      toastError(`❌ ${error?.response?.data?.message || 'Error al registrar usuario'}`)
     }
   }
   const registerAdmin = async (userData) => {
     try {
-      const { data } = await axios.post(`${API_URL}/api/auth/register/admin`, userData)
+      const { data } = await api.post('/api/auth/register/admin', userData)
       authResponse(data, '/')
     } catch (error) {
-      Swal.fire({
-        ...swalOptions,
-        icon: 'error',
-        title: `❌ ${error?.response?.data?.message || 'Error al registrar Administrador'}`
-      })
+      console.error('Register admin error', error)
+      toastError(`❌ ${error?.response?.data?.message || 'Error al registrar Administrador'}`)
     }
   }
 
   const getProfile = async () => {
     try {
-      const { data } = await axios.get(`${API_URL}/api/user/me`, {
-        headers: { Authorization: `Bearer ${token}` }
-      })
+      const { data } = await api.get('/api/user/me')
       setUser(data)
     } catch (error) {
       console.error('Error al obtener perfil:', error)
@@ -121,6 +85,18 @@ const UserProvider = ({ children }) => {
     setUser(null)
     localStorage.removeItem('token')
     navigate('/ingresar')
+  }
+
+  const deleteAccount = async (id) => {
+    try {
+      if (!id) throw new Error('ID inválido')
+      await api.delete(`/api/user/${id}`)
+      toastSuccess('Cuenta eliminada')
+      logout()
+    } catch (error) {
+      console.error('Delete account error', error)
+      toastError(error?.response?.data?.error || 'No se pudo eliminar la cuenta')
+    }
   }
 
   useEffect(() => {
@@ -144,7 +120,8 @@ const UserProvider = ({ children }) => {
     logout,
     registerCliente,
     registerAdmin,
-    getProfile
+    getProfile,
+    deleteAccount
   }), [token, user])
 
   return <UserContext.Provider value={globalState}>{children}</UserContext.Provider>

@@ -1,20 +1,18 @@
 import { useContext, useEffect, useState } from 'react'
 import { UserContext } from '../../context/UserContext'
+import { toastWarning, modalConfirm } from '../../utils/toast'
 import { Button, Form } from 'react-bootstrap'
-import { PencilSquare } from 'react-bootstrap-icons'
-import Swal from 'sweetalert2'
 import './Profile.css'
-import { API_URL } from '../../config/env'
+import api from '../../api/api'
 import formatNumber from '../../utils/formatNumber'
 import { ProductContext } from '../../context/ProductsContext'
 
 const Profile = () => {
-  const { user, getProfile } = useContext(UserContext)
+  const { user, getProfile, deleteAccount } = useContext(UserContext)
   const { products } = useContext(ProductContext)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [preview, setPreview] = useState(null)
-  const [activeSection, setActiveSection] = useState('datos') // 'datos' | 'direccion' | 'compras'
+  const [activeSection, setActiveSection] = useState('datos')
   const [orders, setOrders] = useState([])
   const [ordersLoading, setOrdersLoading] = useState(false)
   const [ordersError, setOrdersError] = useState(null)
@@ -37,16 +35,13 @@ const Profile = () => {
     fetchProfile()
   }, [])
 
-  // Cargar ventas y filtrar por usuario
   useEffect(() => {
     const fetchOrders = async () => {
       if (activeSection !== 'compras' || !user?.id) return
       try {
         setOrdersLoading(true)
         setOrdersError(null)
-        const res = await fetch(`${API_URL}/api/ventas`)
-        if (!res.ok) throw new Error('No se pudieron cargar las compras')
-        const data = await res.json()
+        const { data } = await api.get('/api/ventas')
         const ventas = Array.isArray(data.ventas) ? data.ventas : []
         setOrders(ventas.filter(v => Number(v.cliente_id) === Number(user.id)))
       } catch (e) {
@@ -59,33 +54,6 @@ const Profile = () => {
     fetchOrders()
   }, [activeSection, user])
 
-  const handleEditImage = () => {
-    Swal.fire({
-      title: 'Cargar imagen de perfil',
-      html: `
-        <input id="swal-input-url" class="swal2-input" placeholder="URL de la imagen" type="url" />
-        <img id="swal-preview-img" src="${preview || user.imageUrl || 'https://placehold.co/120x120?text=Foto'}" alt="Vista previa" style="width:120px;height:120px;border-radius:50%;margin-top:1rem;object-fit:cover;" />
-      `,
-      showCancelButton: true,
-      confirmButtonText: 'Aceptar',
-      cancelButtonText: 'Cancelar',
-      customClass: {
-        popup: 'custom-modal-popup',
-        title: 'custom-modal-title',
-        confirmButton: 'custom-modal-confirm',
-        cancelButton: 'custom-modal-cancel',
-        input: 'custom-modal-input'
-      },
-      didOpen: () => {
-        const input = document.getElementById('swal-input-url')
-        const img = document.getElementById('swal-preview-img')
-        input.addEventListener('input', (e) => {
-          img.src = e.target.value || 'https://placehold.co/120x120?text=Foto'
-        })
-      }
-    })
-  }
-
   const loadOrderDetails = async (ventaId) => {
     if (!ventaId) return
     try {
@@ -93,16 +61,12 @@ const Profile = () => {
       setDetailsError(null)
       setSelectedOrder(ventaId)
 
-      const res = await fetch(`${API_URL}/api/detalleVenta/${ventaId}`)
-      if (!res.ok) throw new Error('No se pudo obtener el detalle de la compra')
-      const data = await res.json()
+      const { data } = await api.get(`/api/detalleVenta/${ventaId}`)
 
-      // Normalizar respuesta
       let raw = []
       if (Array.isArray(data.productos)) {
         raw = data.productos
       } else if (Array.isArray(data.producto)) {
-        // ← Aquí estaba el problema: data.producto ya es un array
         raw = data.producto
       } else if (Array.isArray(data)) {
         raw = data
@@ -110,7 +74,6 @@ const Profile = () => {
         raw = [data.producto]
       }
 
-      // Enriquecer
       const parsed = raw.map(d => {
         const prod = products.find(p => Number(p.id) === Number(d.producto_id)) || {}
         const cantidad = Number(d.cantidad) || 0
@@ -135,20 +98,9 @@ const Profile = () => {
 
   if (loading) return <p>⏳ Cargando perfil...</p>
   if (error || !user) return <p>⚠️ {error || 'No se pudo cargar el perfil.'}</p>
-
   return (
     <div className='profile-main-container'>
       <div className='profile-sidebar'>
-        <div className='profile-image-wrapper'>
-          <img
-            src={preview || user.imageUrl || 'https://placehold.co/120x120?text=Foto'}
-            alt='Foto de perfil'
-            className='profile-image'
-          />
-          <div className='edit-icon' onClick={handleEditImage}>
-            <PencilSquare size={22} />
-          </div>
-        </div>
         <div className='profile-menu'>
           <Button
             variant='outline-secondary'
@@ -170,7 +122,6 @@ const Profile = () => {
             Direcciones
           </Button>
         </div>
-        <Button variant='outline-danger' className='delete-account-btn mt-4'>Borrar Cuenta</Button>
       </div>
       <div className='profile-content'>
         {activeSection === 'datos' && (
@@ -220,7 +171,6 @@ const Profile = () => {
                 <table className='table align-middle'>
                   <thead>
                     <tr>
-                      {/* <th>#</th> */}
                       <th>Fecha</th>
                       <th>Estado</th>
                       <th>Total</th>
@@ -230,7 +180,6 @@ const Profile = () => {
                   <tbody>
                     {orders.map(o => (
                       <tr key={o.id}>
-                        {/* <td>{o.id}</td> */}
                         <td>{new Date(o.fecha).toLocaleString()}</td>
                         <td>{o.estado}</td>
                         <td>${formatNumber(Number(o.total || 0))}</td>

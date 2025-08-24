@@ -21,9 +21,25 @@
 
 .img-carousel {
   width: 80vw;
-  height: 50vh;
+  height: 65vh;
   object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  transition: transform .35s ease;
 }
+
+.img-carousel.clickable { cursor: pointer; }
+.img-carousel.clickable:hover { transform: scale(1.02); }
+
+.home-carousel .carousel-item {
+  text-align: center;
+  display: flex; /* forzar flex para centrar contenido */
+  justify-content: center;
+  align-items: center;
+}
+
+/* aseguramos que la imagen no se estire al 100% del item sino su propio ancho */
+.home-carousel .carousel-item img.img-carousel { flex-shrink: 1; }
 
 .carousel-control-prev-icon,
 .carousel-control-next-icon {

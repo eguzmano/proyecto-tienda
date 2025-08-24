@@ -1,5 +1,5 @@
 import { createContext, useEffect, useMemo, useState, useCallback } from 'react'
-import { API_URL } from '../config/env'
+import api from '../api/api'
 
 export const ProductContext = createContext()
 
@@ -9,21 +9,17 @@ const ProductProvider = ({ children }) => {
 
   const fetchProducts = useCallback(async () => {
     try {
-      const res = await fetch(`${API_URL}/api/productos`)
-      const data = await res.json()
+      const { data } = await api.get('/api/productos')
       setProducts((data.productos || []).map(p => ({ ...p, precio: Number(p.precio) })))
     } catch (error) {
-      console.log('Error fetching products:', error)
     }
   }, [])
 
   const fetchProduct = useCallback(async (id) => {
     try {
-      const res = await fetch(`${API_URL}/api/productos/${id}`)
-      const data = await res.json()
+      const { data } = await api.get(`/api/productos/${id}`)
       setProduct(data.producto ? { ...data.producto, precio: Number(data.producto.precio) } : null)
     } catch (error) {
-      console.log('Error fetching product:', error)
       setProduct(null)
     }
   }, [])
@@ -56,6 +52,17 @@ const ProductProvider = ({ children }) => {
     setProducts(prev => [...prev, { ...nuevo, precio: Number(nuevo.precio) }])
   }
 
+  const deleteProduct = async (id) => {
+    try {
+      await api.delete(`/api/productos/${id}`)
+      setProducts(prev => prev.filter(p => Number(p.id) !== Number(id)))
+      setProduct(prev => (prev && Number(prev.id) === Number(id) ? null : prev))
+    } catch (error) {
+      console.error('Error deleting product:', error)
+      throw error
+    }
+  }
+
   const globalState = useMemo(() => ({
     products,
     product,
@@ -63,7 +70,8 @@ const ProductProvider = ({ children }) => {
     clearProduct,
     removeProduct,
     updateProduct,
-    addProduct
+    addProduct,
+    deleteProduct
   }), [products, product])
 
   return (

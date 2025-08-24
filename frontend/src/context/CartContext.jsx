@@ -1,42 +1,24 @@
 import { createContext, useState, useEffect, useMemo, useContext } from 'react'
-import Swal from 'sweetalert2'
-import 'sweetalert2/dist/sweetalert2.min.css'
+import { toastWarning, toastInfo, toastSuccess, toastError } from '../utils/toast'
 import { UserContext } from './UserContext'
 import { ProductContext } from './ProductsContext'
-import { API_URL } from '../config/env'
+import api from '../api/api'
 
 export const CartContext = createContext()
 
 const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState(() => {
-    const storedCart = localStorage.getItem('cart')
-    return storedCart ? JSON.parse(storedCart) : []
-  })
-  const [total, setTotal] = useState(0)
+  const [cart, setCart] = useState([])
+  const [checkingOut, setCheckingOut] = useState(false)
   const { user, token } = useContext(UserContext)
   const { products } = useContext(ProductContext)
-
-  useEffect(() => {
-    const newTotal = cart.reduce((acc, p) => acc + p.precio * p.count, 0)
-    setTotal(currentTotal => {
-      if (currentTotal !== newTotal) {
-        return newTotal
-      }
-      return currentTotal
-    })
-  }, [cart])
-
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart))
-  }, [cart])
 
   useEffect(() => {
     const fetchCart = async () => {
       if (user?.id && token && products.length > 0) {
         try {
-          const res = await fetch(`${API_URL}/api/clientes/${user.id}/carro`)
-          const data = await res.json()
+          const { data } = await api.get(`/api/clientes/${user.id}/carro`)
           const cartMap = {}
+
           data.forEach(item => {
             const prod = products.find(p => Number(p.id) === Number(item.producto_id))
             if (!prod) return
@@ -63,39 +45,39 @@ const CartProvider = ({ children }) => {
     fetchCart()
   }, [user, token, products])
 
+  const normalizeCart = (rows) => {
+    const cartMap = {}
+    rows.forEach(item => {
+      const prod = products.find(p => Number(p.id) === Number(item.producto_id))
+      if (!prod) return
+      if (!cartMap[item.producto_id]) {
+        cartMap[item.producto_id] = {
+          id: item.producto_id,
+          count: item.cantidad,
+          nombre: prod.nombre,
+          precio: Number(prod.precio),
+          imagen_url: prod.imagen_url
+        }
+      } else {
+        cartMap[item.producto_id].count += item.cantidad
+      }
+    })
+    setCart(Object.values(cartMap))
+  }
+
   const syncQuantity = async (productoId, delta) => {
     if (!user?.id) return
     try {
-      const resp = await fetch(`${API_URL}/api/clientes/${user.id}/carro/${productoId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ delta })
-      })
-      // si el backend respondió 404 (ya no existe) continuamos; otros errores se abortan
-      if (!resp.ok && resp.status !== 404) return
-
-      const res = await fetch(`${API_URL}/api/clientes/${user.id}/carro`)
-      const data = await res.json()
-
-      // FIX: acumular cantidades cuando hay múltiples filas del mismo producto
-      const cartMap = {}
-      data.forEach(item => {
-        const prod = products.find(p => Number(p.id) === Number(item.producto_id))
-        if (!prod) return
-        if (!cartMap[item.producto_id]) {
-          cartMap[item.producto_id] = {
-            id: item.producto_id,
-            count: item.cantidad,
-            nombre: prod.nombre,
-            precio: Number(prod.precio),
-            imagen_url: prod.imagen_url
-          }
-        } else {
-          cartMap[item.producto_id].count += item.cantidad
-        }
-      })
-      setCart(Object.values(cartMap))
-    } catch (_) {}
+      await api.patch(
+        `/api/clientes/${user.id}/carro/${productoId}`,
+        { delta },
+        { validateStatus: s => (s >= 200 && s < 300) || s === 404 }
+      )
+      const { data } = await api.get(`/api/clientes/${user.id}/carro`)
+      normalizeCart(data)
+    } catch (e) {
+      if (process.env.NODE_ENV !== 'production') console.error('Error syncQuantity', e)
+    }
   }
 
   const increaseQuantity = (id) => {
@@ -103,7 +85,6 @@ const CartProvider = ({ children }) => {
   }
 
   const decreaseQuantity = (id) => {
-    // si la cantidad actual es 1, eliminamos la línea
     const item = cart.find(p => Number(p.id) === Number(id))
     if (!item) return
     if (item.count <= 1) {
@@ -113,78 +94,31 @@ const CartProvider = ({ children }) => {
   }
 
   const addToCart = async (product) => {
-    const swalOptions = {
-      toast: true,
-      position: 'top-end',
-      showConfirmButton: false,
-      timer: 2000,
-      customClass: {
-        popup: 'custom-toast',
-        title: 'custom-title'
-      }
-    }
-
     if (!user?.id) {
-      Swal.fire({
-        ...swalOptions,
-        icon: 'warning',
-        title: 'Debes iniciar sesión para agregar productos al carrito'
-      })
+      toastWarning('Debes iniciar sesión para agregar productos al carrito')
       return
     }
 
-    // 1) Actualización optimista en memoria
     const exists = cart.some(p => Number(p.id) === Number(product.id))
     setCart(prevCart => {
       if (exists) {
-        Swal.fire({
-          ...swalOptions,
-          icon: 'info',
-          title: `Se agregó ${product.nombre} al carrito`
-        })
-        return prevCart.map(p =>
-          Number(p.id) === Number(product.id) ? { ...p, count: p.count + 1 } : p
-        )
+        toastInfo(`Se agregó ${product.nombre} al carrito`)
+        return prevCart.map(p => Number(p.id) === Number(product.id) ? { ...p, count: p.count + 1 } : p)
       } else {
-        Swal.fire({
-          ...swalOptions,
-          icon: 'success',
-          title: `${product.nombre} añadida al carrito 🛒`
-        })
+        toastSuccess(`${product.nombre} añadida al carrito 🛒`)
         return [...prevCart, { ...product, count: 1 }]
       }
     })
 
     try {
-      // 2) Persistir en backend (+1 siempre)
-      await fetch(`${API_URL}/api/clientes/${user.id}/carro`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ producto_id: product.id, cantidad: 1 })
+      await api.post(`/api/clientes/${user.id}/carro`, {
+        producto_id: product.id,
+        cantidad: 1
       })
-
-      // 3) Re-sincronizar con backend para reflejar el estado real
-      const res = await fetch(`${API_URL}/api/clientes/${user.id}/carro`)
-      const data = await res.json()
-      const cartMap = {}
-      data.forEach(item => {
-        const prod = products.find(p => Number(p.id) === Number(item.producto_id))
-        if (!prod) return
-        if (!cartMap[item.producto_id]) {
-          cartMap[item.producto_id] = {
-            id: item.producto_id,
-            count: item.cantidad,
-            nombre: prod.nombre,
-            precio: Number(prod.precio),
-            imagen_url: prod.imagen_url
-          }
-        } else {
-          cartMap[item.producto_id].count += item.cantidad
-        }
-      })
-      setCart(Object.values(cartMap))
+      const { data } = await api.get(`/api/clientes/${user.id}/carro`)
+      normalizeCart(data)
     } catch (error) {
-      // Rollback simple si falla el backend
+      if (process.env.NODE_ENV !== 'production') console.error('Add to cart error', error)
       setCart(prev => {
         const current = prev.find(p => Number(p.id) === Number(product.id))
         if (!current) return prev
@@ -195,18 +129,14 @@ const CartProvider = ({ children }) => {
         }
         return prev.filter(p => Number(p.id) !== Number(product.id))
       })
-      Swal.fire({
-        ...swalOptions,
-        icon: 'error',
-        title: 'Error al agregar al carrito'
-      })
+      toastError('Error al agregar al carrito')
     }
   }
 
   const removeAll = async (id) => {
     if (!user?.id) return
-    await fetch(`${API_URL}/api/clientes/${user.id}/carro/${id}`, {
-      method: 'DELETE'
+    await api.delete(`/api/clientes/${user.id}/carro/${id}`, {
+      validateStatus: s => (s >= 200 && s < 300) || s === 404
     })
     setCart(prevCart => prevCart.filter(p => p.id !== id))
   }
@@ -216,16 +146,33 @@ const CartProvider = ({ children }) => {
       if (!skipApi && user?.id && cart.length > 0) {
         await Promise.all(
           cart.map(item =>
-            fetch(`${API_URL}/api/clientes/${user.id}/carro/${item.id}`, {
-              method: 'DELETE'
-            })
-              .then(() => {})
-              .catch(() => {}) // ignora errores/404
+            api.delete(
+              `/api/clientes/${user.id}/carro/${item.id}`,
+              { validateStatus: s => (s >= 200 && s < 300) || s === 404 }
+            ).catch(() => {})
           )
         )
       }
     } finally {
-      setCart([]) // asegura limpiar UI siempre
+      setCart([])
+    }
+  }
+
+  const checkout = async () => {
+    if (!user?.id) throw new Error('Debe iniciar sesión')
+    if (cart.length === 0) throw new Error('Carrito vacío')
+    if (checkingOut) return null
+    setCheckingOut(true)
+    try {
+      const { data } = await api.post(`/api/checkout/${user.id}`, {})
+      const venta = data?.venta
+      setCart([])
+      return venta || null
+    } catch (error) {
+      if (process.env.NODE_ENV !== 'production') console.error('Checkout error', error)
+      throw error
+    } finally {
+      setCheckingOut(false)
     }
   }
 
@@ -233,11 +180,13 @@ const CartProvider = ({ children }) => {
     cart,
     increaseQuantity,
     decreaseQuantity,
-    total,
+    total: cart.reduce((acc, p) => acc + p.precio * p.count, 0),
     addToCart,
     removeAll,
-    clearCart
-  }), [cart, total])
+    clearCart,
+    checkout,
+    checkingOut
+  }), [cart, checkingOut])
 
   return (
     <CartContext.Provider value={globalState}>
